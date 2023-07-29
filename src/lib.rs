@@ -1,3 +1,7 @@
+mod config;
+mod renderer;
+
+use config::{MAJOR_VERSION, MINOR_VERSION};
 use cstr::cstr;
 use qmetaobject::prelude::*;
 use std::ffi::CStr;
@@ -27,6 +31,12 @@ struct QExampleQmlPlugin {
 
 impl QQmlExtensionPlugin for QExampleQmlPlugin {
     fn register_types(&mut self, uri: &CStr) {
-        qml_register_type::<Greeter>(uri, 1, 0, cstr!("Greeter"));
+        qml_register_type::<Greeter>(uri, MAJOR_VERSION, MINOR_VERSION, cstr!("Greeter"));
+        qml_register_type::<renderer::scence_renderer::ScenceRenderer>(
+            uri,
+            MAJOR_VERSION,
+            MINOR_VERSION,
+            cstr!("ScenceRenderer"),
+        );
     }
 }

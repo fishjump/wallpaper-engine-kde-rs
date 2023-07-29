@@ -2,6 +2,7 @@
 name = "wallpaper-engine-kde-rs"
 version = "0.1.0"
 edition = "2021"
+build = "build.rs"
 
 [lib]
 name = "wallpaper_engine_kde_rs"
@@ -9,6 +10,11 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
-chrono = "0.4.26"
-cstr = "0.2.11"
+cstr = "0.2"
+cpp = "0.5.6"
 qmetaobject = "0.2.9"
+qttypes = "0.2.9"
+
+[build-dependencies]
+cpp_build = "0.5.6"
+semver = "1"
