@@ -1,0 +1,38 @@
+[env]
+BUILD_TYPE = "${BUILD_TYPE-:debug}"
+
+[tasks.pack]
+dependencies = ["format", "pack-debug", "pack-release"]
+script_runner = "bash"
+script = [
+    '''
+    echo "Build type: ${BUILD_TYPE}"
+    mkdir -p target/${BUILD_TYPE}/package
+    cp -r plugin/* target/${BUILD_TYPE}/package/
+    cp target/${BUILD_TYPE}/*.so target/${BUILD_TYPE}/package/contents/ui/WallpaperEngineKDE
+    cp metadata.desktop target/${BUILD_TYPE}/package
+''',
+]
+
+[tasks.pack-debug]
+condition = { env = { "BUILD_TYPE" = "debug" } }
+command = "cargo"
+args = ["build"]
+
+[tasks.pack-release]
+condition = { env = { "BUILD_TYPE" = "release" } }
+command = "cargo"
+args = ["build", "--release"]
+
+[tasks.install]
+dependencies = ["pack"]
+script_runner = "bash"
+script = ['''
+    plasmapkg2 -i target/${BUILD_TYPE}/package 2>/dev/null || \
+    plasmapkg2 -u target/${BUILD_TYPE}/package
+''']
+
+[tasks.uninstall]
+dependencies = ["pack"]
+script_runner = "bash"
+script = ["plasmapkg2 -r target/${BUILD_TYPE}/package"]
