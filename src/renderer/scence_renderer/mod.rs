@@ -1,27 +1,15 @@
 use qmetaobject::prelude::*;
-use qmetaobject::scenegraph::{ContainerNode, RectangleNode, SGNode};
+use qmetaobject::scenegraph::{ContainerNode, SGNode};
+use qttypes::{ImageFormat, QImage, QSize};
 
-#[cfg(not(no_qt))]
-use cpp::cpp;
-
-cpp! {{
-    #include <QtQuick/QQuickItem>
-}}
+use crate::brige::qtdeclarative_ext::qquick_item_ext::{QQuickItemExt, QQuickItemFlag};
+use crate::brige::scenegraph_ext::simple_texture_node::{
+    SimpleTextureNode, SimpleTextureNodeTrait,
+};
 
 #[derive(QObject, Default)]
 pub struct ScenceRenderer {
     base: qt_base_class!(trait QQuickItem),
-}
-
-impl ScenceRenderer {
-    fn set_flag(&mut self) {
-        let obj = self.get_cpp_object();
-        let flag = QQuickItemFlag::ItemHasContents;
-        assert!(!obj.is_null());
-        cpp!(unsafe [obj as "QQuickItem *", flag as "QQuickItem::Flag"] {
-            obj->setFlag(flag);
-        });
-    }
 }
 
 impl QQuickItem for ScenceRenderer {
@@ -31,26 +19,29 @@ impl QQuickItem for ScenceRenderer {
 
     fn update_paint_node(&mut self, mut node: SGNode<ContainerNode>) -> SGNode<ContainerNode> {
         let rect = (self as &dyn QQuickItem).bounding_rect();
-        node.update_static((|mut n: SGNode<RectangleNode>| -> SGNode<RectangleNode> {
-            n.create(self);
-            n.set_rect(rect);
-            n.set_color(QColor::from_name("steelblue"));
-            n
-        },));
+        let mut image = QImage::new(
+            QSize {
+                width: 128,
+                height: 128,
+            },
+            ImageFormat::RGB32,
+        );
+        image.fill(QColor::from_name("red"));
+
+        let texture = self.window().create_texture_from_image(image).into();
+
+        node.update_static((
+            |mut n: SGNode<SimpleTextureNode>| -> SGNode<SimpleTextureNode> {
+                n.create();
+                n.set_texture(texture);
+                n.set_rect(rect);
+                n
+            },
+        ));
         node
     }
 
     fn component_complete(&mut self) {
-        self.set_flag();
+        self.set_flag(QQuickItemFlag::ItemHasContents);
     }
-}
-
-#[repr(C)]
-#[allow(unused)]
-enum QQuickItemFlag {
-    ItemClipsChildrenToShape = 0x01,
-    ItemAcceptsInputMethod = 0x02,
-    ItemIsFocusScope = 0x04,
-    ItemHasContents = 0x08,
-    ItemAcceptsDrops = 0x10,
 }

@@ -1,10 +1,12 @@
+mod brige;
 mod config;
 mod renderer;
+
+use std::ffi::CStr;
 
 use config::{MAJOR_VERSION, MINOR_VERSION};
 use cstr::cstr;
 use qmetaobject::prelude::*;
-use std::ffi::CStr;
 
 // The `QObject` custom derive macro allows to expose a class to Qt and QML
 #[derive(QObject, Default)]
