@@ -1,10 +1,8 @@
+use crate::brige::utils::AsRawPtr;
+
 pub enum Texture {}
 
-impl Into<*mut Texture> for &mut Texture {
-    fn into(self) -> *mut Texture {
-        self as *mut Texture
-    }
-}
+impl AsRawPtr for Texture {}
 
 #[repr(C)]
 #[derive(Clone, Copy, PartialEq, Debug)]
