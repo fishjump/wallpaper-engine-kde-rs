@@ -9,7 +9,7 @@ import "WallpaperEngineKDE" 1.0
 Rectangle {
     visible: true
 
-    ScenceRenderer {
+    SceneRenderer {
         width: 200
         height: 200
         anchors.fill: parent

@@ -1,1 +1,1 @@
-pub mod scence_renderer;
+pub mod scene_renderer;

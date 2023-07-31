@@ -34,11 +34,11 @@ struct QExampleQmlPlugin {
 impl QQmlExtensionPlugin for QExampleQmlPlugin {
     fn register_types(&mut self, uri: &CStr) {
         qml_register_type::<Greeter>(uri, MAJOR_VERSION, MINOR_VERSION, cstr!("Greeter"));
-        qml_register_type::<renderer::scence_renderer::ScenceRenderer>(
+        qml_register_type::<renderer::scene_renderer::SceneRenderer>(
             uri,
             MAJOR_VERSION,
             MINOR_VERSION,
-            cstr!("ScenceRenderer"),
+            cstr!("SceneRenderer"),
         );
     }
 }
