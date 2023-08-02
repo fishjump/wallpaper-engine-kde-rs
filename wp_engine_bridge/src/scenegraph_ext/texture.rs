@@ -1,4 +1,4 @@
-use crate::brige::utils::AsRawPtr;
+use crate::utils::AsRawPtr;
 
 pub enum Texture {}
 

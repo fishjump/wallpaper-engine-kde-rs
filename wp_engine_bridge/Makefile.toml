@@ -1,0 +1,9 @@
+[tasks.build]
+dependencies = ["format"]
+command = "cargo"
+args = ["build"]
+
+[tasks.build-release]
+dependencies = ["format"]
+command = "cargo"
+args = ["build", "--release"]

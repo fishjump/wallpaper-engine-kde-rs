@@ -1,0 +1,19 @@
+[package]
+name = "wp_engine_bridge"
+version = "0.1.0"
+edition = "2021"
+build = "build.rs"
+
+[lib]
+name = "wp_engine_bridge"
+path = "src/lib.rs"
+
+[dependencies]
+cstr = "0.2"
+cpp = "0.5.6"
+qmetaobject = "0.2.9"
+qttypes = "0.2.9"
+
+[build-dependencies]
+cpp_build = "0.5.6"
+semver = "1"

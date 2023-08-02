@@ -15,6 +15,7 @@ void main() {
     vertexColor = aColor;
 }
 
+
 )";
 
 constexpr const char *fragmentShader = R"(

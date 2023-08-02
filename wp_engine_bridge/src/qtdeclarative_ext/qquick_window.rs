@@ -1,7 +1,7 @@
 use cpp::cpp;
 use qttypes::QImage;
 
-use crate::brige::scenegraph_ext::texture::Texture;
+use crate::scenegraph_ext::texture::Texture;
 
 cpp! {{
     #include <QtQuick/QQuickWindow>

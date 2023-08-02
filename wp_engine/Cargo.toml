@@ -1,0 +1,16 @@
+[package]
+name = "wp_engine"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "wp_engine"
+path = "src/lib.rs"
+crate-type = ["cdylib"]
+
+[dependencies]
+cstr = "0.2"
+qmetaobject = "0.2.9"
+qttypes = "0.2.9"
+thiserror = "1.0.44"
+wp_engine_bridge = { path = "../wp_engine_bridge" }

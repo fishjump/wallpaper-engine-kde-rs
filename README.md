@@ -15,7 +15,17 @@ I am trying to create a wallpaper engine for KDE using Rust for some reasons:
 - [x] Provide our functionality to the QML frontend as a .so file.
 - [x] Render the wallpaper using Qt GSNode.
 - [x] Render a triangle using OpenGL and Qt.
+- [x] VFS to load local assets and unpacked assets from the scene file.
 - [ ] Hardcode to render a walllpaper from the steam workshop.
+- [ ] Scene unpacker, see [RePkg](https://github.com/notscuffed/repkg)
+
+## Other things to do
+
+- [ ] Logger, watch debug output in the plasma shell.
+
+## Notes
+
+- Shaders in a unpacked scene file is not using standard GLSL. They support `#include`, which comes from `~/steam/steamapps/common/wallpaper_engine/assets/`. Technically, I can embed these files, but due to the copyright issue, I will not do that.
 
 ## Issues
 

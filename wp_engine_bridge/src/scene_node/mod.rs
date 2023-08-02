@@ -5,7 +5,7 @@ use qmetaobject::scenegraph::SGNode;
 use qttypes::{QColor, QRectF};
 
 cpp! {{
-    #include "src/brige/scene_node/scene_node.cpp"
+    #include "src/scene_node/scene_node.cpp"
 }}
 
 pub struct SceneNode {}
