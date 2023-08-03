@@ -1,10 +1,10 @@
 mod scene_file;
 mod scene_path;
 pub mod scene_vfs;
-pub mod scene_vfs_error;
 
 #[cfg(test)]
 mod test {
+    use crate::vfs::scene_path::ScenePath;
     use crate::vfs::scene_vfs::SceneVFS;
 
     #[test]
@@ -21,12 +21,11 @@ mod test {
     }
 
     #[test]
-    fn link_and_fetch() {
+    fn mount_and_fetch() {
         let vfs = SceneVFS::new();
 
         assert!(!vfs.exists("Cargo.toml").unwrap());
-        assert!(vfs.link("./Cargo.toml", "Cargo.toml").is_ok());
-
+        assert!(vfs.mount("Cargo.toml", "./Cargo.toml").is_ok());
         assert!(vfs.exists("Cargo.toml").unwrap());
 
         let content = vfs.read("Cargo.toml").unwrap();
@@ -36,5 +35,16 @@ mod test {
         let from_local = std::fs::read_to_string("./Cargo.toml").unwrap();
 
         assert_eq!(from_vfs, from_local.as_str());
+    }
+
+    #[test]
+    fn path_simplify() {
+        let path1 = ScenePath::new("/path/to/file").unwrap();
+        assert_eq!(path1.to_string(), "/path/to/file");
+
+        let path2 = ScenePath::new("/path/to/./file/../../to/file").unwrap();
+        assert_eq!(path2.to_string(), "/path/to/file");
+
+        assert_eq!(path1, path2);
     }
 }

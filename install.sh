@@ -18,6 +18,8 @@ function package() {
         TARGET="${BASE}/target/debug"
     fi
 
+    echo "Packaging at ${TARGET}/plugin"
+
     cp -r ${PLUGIN} ${TARGET}
     cp ${TARGET}/*.so ${TARGET}/plugin/contents/ui/WallpaperEngineKDE
     cp ${BASE}/metadata.desktop ${TARGET}/plugin
@@ -30,6 +32,8 @@ function install() {
         TARGET="${BASE}/target/debug"
     fi
 
+    echo "Installing from ${TARGET}/plugin"
+
     plasmapkg2 -i ${TARGET}/plugin 2>/dev/null || \
     plasmapkg2 -u ${TARGET}/plugin
 }
@@ -40,6 +44,8 @@ function remove() {
     else
         TARGET="${BASE}/target/debug"
     fi
+
+    echo "Removing from ${TARGET}/plugin"
 
     plasmapkg2 -r ${TARGET}/plugin
 }

@@ -9,7 +9,9 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
+byteorder = "1.4.3"
 cstr = "0.2"
+log = "0.4.19"
 qmetaobject = "0.2.9"
 qttypes = "0.2.9"
 thiserror = "1.0.44"

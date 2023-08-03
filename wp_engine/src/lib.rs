@@ -1,5 +1,8 @@
+mod error;
 mod greeter;
 mod logger;
-mod qt_plugin;
 mod renderer;
+mod repkg;
 mod vfs;
+
+pub mod qt_plugin;

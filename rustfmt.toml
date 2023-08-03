@@ -1,7 +1,5 @@
 newline_style = "Unix"
 
-
-merge_imports = true
 reorder_imports = true
 group_imports = "StdExternalCrate"
 imports_granularity = "Module"

@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-use super::scene_vfs_error::SceneVFSError;
+use crate::error::WPEngineError;
 
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub struct ScenePath {
@@ -8,19 +8,19 @@ pub struct ScenePath {
 }
 
 impl ScenePath {
-    pub fn new(path: &str) -> Result<Self, SceneVFSError> {
+    pub fn new(path: &str) -> Result<Self, WPEngineError> {
         Ok(ScenePath {
             path: Self::simplify(path)?,
         })
     }
 
-    fn simplify(path: &str) -> Result<String, SceneVFSError> {
+    fn simplify(path: &str) -> Result<String, WPEngineError> {
         let mut stack = Vec::new();
         for part in path.split('/') {
             match part {
                 ".." => {
                     if let None = stack.pop() {
-                        return Err(SceneVFSError::MalformPathError(format!(
+                        return Err(WPEngineError::VfsMalformPathError(format!(
                             "too many parent directories, path: {}",
                             path
                         )));
