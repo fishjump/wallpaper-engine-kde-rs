@@ -9,10 +9,14 @@ path = "src/lib.rs"
 crate-type = ["cdylib"]
 
 [dependencies]
+anyhow = "1.0.72"
+bitflags = "2.3.3"
 byteorder = "1.4.3"
 cstr = "0.2"
 log = "0.4.19"
+num_enum = "0.6.1"
 qmetaobject = "0.2.9"
 qttypes = "0.2.9"
 thiserror = "1.0.44"
+walkdir = "2.3.3"
 wp_engine_bridge = { path = "../wp_engine_bridge" }

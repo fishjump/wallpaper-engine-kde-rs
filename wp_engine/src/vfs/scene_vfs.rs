@@ -2,6 +2,8 @@ use std::collections::HashMap;
 use std::fs;
 use std::sync::{Arc, RwLock};
 
+use walkdir::WalkDir;
+
 use super::scene_file::{SceneFile, SceneFileContent};
 use super::scene_path::ScenePath;
 use crate::error::WPEngineError;
@@ -28,6 +30,52 @@ impl SceneVFS {
                 content: SceneFileContent::Absent(from),
             },
         );
+
+        Ok(())
+    }
+
+    pub fn mount_dir(&self, to: &str, from: &str) -> Result<(), WPEngineError> {
+        let dir = WalkDir::new(from);
+
+        for entry in dir {
+            if let Err(err) = entry {
+                return Err(WPEngineError::VfsUpstreamError(format!(
+                    "error from walkdir, from(phy): {}, to(vfs): {}, message: {}",
+                    from, to, err
+                )));
+            }
+
+            let entry = entry.unwrap();
+            if entry.file_type().is_dir() {
+                continue;
+            }
+
+            let relative = entry.path().strip_prefix(from);
+            if let Err(err) = relative {
+                return Err(WPEngineError::VfsUpstreamError(format!(
+                    "error from strip_prefix, from(phy): {}, to(vfs): {}, message: {}",
+                    from, to, err
+                )));
+            }
+            let relative = relative.unwrap();
+            let to = format!("{}/{}", to, relative.to_str().unwrap());
+
+            let from = entry.path().to_str();
+            if let None = from {
+                return Err(WPEngineError::VfsUpstreamError(format!(
+                    "error from path.to_str, from(phy): {:?}, to(vfs): {}",
+                    entry, to
+                )));
+            }
+
+            let res = self.mount(to.as_str(), from.unwrap());
+            if let Err(err) = res {
+                return Err(WPEngineError::VfsUpstreamError(format!(
+                    "error from self.mount, from(phy): {:?}, to(vfs): {}, message: {}",
+                    entry, to, err
+                )));
+            }
+        }
 
         Ok(())
     }

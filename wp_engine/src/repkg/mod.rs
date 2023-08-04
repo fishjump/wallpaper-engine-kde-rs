@@ -12,27 +12,43 @@ https://github.com/notscuffed/repkg
 */
 mod byteorder_ext;
 mod package;
-mod package_loader;
+mod tex;
 
 #[cfg(test)]
 mod test {
     use std::fs::File;
     use std::io::BufReader;
 
-    use super::package_loader::PackageLoader;
+    use crate::repkg::package::package::Package;
+    use crate::repkg::tex::tex::Tex;
 
     #[test]
-    fn test_package_loader() {
+    fn load_package() {
         let file = File::open("../assets/scene.pkg").unwrap();
         let mut reader = BufReader::new(file);
-        let loader = PackageLoader::new();
 
-        let pkg = loader.read_from(&mut reader).unwrap();
+        let pkg = Package::read_from(&mut reader).unwrap();
 
         assert_eq!(pkg.magic, "PKGV0018");
         assert_eq!(pkg.header_size, 0x1a3);
         assert_eq!(pkg.entries.len(), 10);
 
         println!("pkg: {:#?}", pkg);
+    }
+
+    #[test]
+    fn load_tex() {
+        let file = File::open("../assets/wallpaper/materials/00009.tex").unwrap();
+        let mut reader = BufReader::new(file);
+        let tex = Tex::read_from(&mut reader).unwrap();
+
+        assert_eq!(tex.magic1, "TEXV0005");
+        assert_eq!(tex.magic2, "TEXI0001");
+        assert_eq!(tex.header.tex_width, 4096);
+        assert_eq!(tex.header.tex_height, 2048);
+        assert_eq!(tex.header.img_width, 2560);
+        assert_eq!(tex.header.img_height, 1440);
+
+        println!("tex: {:#?}", tex);
     }
 }

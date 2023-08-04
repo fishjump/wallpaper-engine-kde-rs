@@ -1,0 +1,3 @@
+pub const MAXIMUM_FRAME_COUNT: i32 = 100_000;
+pub const MAXIMUM_IMAGE_COUNT: i32 = 100;
+pub const MAXIMUM_MIPMAP_COUNT: i32 = 32;
