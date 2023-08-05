@@ -1,7 +1,8 @@
 use std::fs::File;
 use std::io::BufReader;
 
-use crate::error::WPEngineError;
+use anyhow::Result;
+
 use crate::repkg::byteorder_ext::WPReadBytesExt;
 
 #[derive(Debug)]
@@ -35,7 +36,7 @@ pub struct TexFrameInfoV2V3 {
 }
 
 impl TexFrameInfo {
-    pub fn read_from_v1(reader: &mut BufReader<File>) -> Result<TexFrameInfo, WPEngineError> {
+    pub fn read_from_v1(reader: &mut BufReader<File>) -> Result<TexFrameInfo> {
         Ok(TexFrameInfo::V1(TexFrameInfoV1 {
             image_id: reader.wp_read_i32()?,
             frame_time: reader.wp_read_f32()?,
@@ -48,7 +49,7 @@ impl TexFrameInfo {
         }))
     }
 
-    pub fn read_from_v2v3(reader: &mut BufReader<File>) -> Result<TexFrameInfo, WPEngineError> {
+    pub fn read_from_v2v3(reader: &mut BufReader<File>) -> Result<TexFrameInfo> {
         Ok(TexFrameInfo::V2V3(TexFrameInfoV2V3 {
             image_id: reader.wp_read_i32()?,
             frame_time: reader.wp_read_f32()?,

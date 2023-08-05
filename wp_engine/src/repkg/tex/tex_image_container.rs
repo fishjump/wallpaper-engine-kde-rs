@@ -1,14 +1,15 @@
 use std::fs::File;
 use std::io::BufReader;
 
+use anyhow::Result;
 use num_enum::TryFromPrimitive;
 
 use super::constant;
 use super::free_image_format::FreeImageFormat;
 use super::tex_format::TexFormat;
 use super::tex_image::TexImage;
-use crate::error::WPEngineError;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
+use crate::wp_error;
 
 #[derive(Debug)]
 pub struct TexImageContainer {
@@ -22,26 +23,29 @@ impl TexImageContainer {
     pub fn read_from(
         reader: &mut BufReader<File>,
         tex_format: TexFormat,
-    ) -> Result<TexImageContainer, WPEngineError> {
+    ) -> Result<TexImageContainer> {
         let magic = reader.wp_read_string_dyn()?;
 
         let image_count = reader.wp_read_i32()?;
         if image_count > constant::MAXIMUM_IMAGE_COUNT {
-            return Err(WPEngineError::RepkgTooManyTexImagesError(format!(
-                "too many images: {}, expect less than {}",
+            return wp_error!(
+                RepkgTooManyTexImagesError,
+                stringify!(image_count),
                 image_count,
+                stringify!(constant::MAXIMUM_IMAGE_COUNT),
                 constant::MAXIMUM_IMAGE_COUNT
-            )));
+            );
         }
 
         let format = match magic.as_str() {
             "TEXB0001" | "TEXB0002" => FreeImageFormat::FifUnknown,
             "TEXB0003" => FreeImageFormat::wp_try_from(reader.wp_read_u32()?)?,
             _ => {
-                return Err(WPEngineError::RepkgInvalidTexMagic2(format!(
-                        "invalid tex image container magic: {}, expect one of [TEXB0001, TEXB0002, TEXB0003]",
-                        magic
-                    )));
+                return wp_error!(
+                    RepkgInvalidTexImageMagicError,
+                    "one of [TEXB0001, TEXB0002, TEXB0003]",
+                    magic
+                );
             }
         };
 
@@ -50,10 +54,11 @@ impl TexImageContainer {
             "TEXB0002" => TexImageContainerVersion::Version2,
             "TEXB0003" => TexImageContainerVersion::Version3,
             _ => {
-                return Err(WPEngineError::RepkgInvalidTexMagic2(format!(
-                        "invalid tex image container magic: {}, expect one of [TEXB0001, TEXB0002, TEXB0003]",
-                        magic
-                    )));
+                return wp_error!(
+                    RepkgInvalidTexImageMagicError,
+                    "one of [TEXB0001, TEXB0002, TEXB0003]",
+                    magic
+                );
             }
         };
 
@@ -82,16 +87,15 @@ pub enum TexImageContainerVersion {
 }
 
 impl TexImageContainerVersion {
-    fn wp_try_from(value: u32) -> Result<Self, WPEngineError> {
+    fn wp_try_from(value: u32) -> Result<Self> {
         let value = value as u8;
         match Self::try_from(value) {
             Ok(v) => Ok(v),
-            Err(_) => Err(WPEngineError::RepkgInvalidTexImageContainerVersion(
-                format!(
-                    "invalid version: {}, expect one of [Version1(1), Version2(2), Version3(3)]",
-                    value
-                ),
-            )),
+            Err(_) => wp_error!(
+                RepkgInvalidTexImageContainerVersion,
+                "one of [1, 2, 3]",
+                value
+            ),
         }
     }
 }

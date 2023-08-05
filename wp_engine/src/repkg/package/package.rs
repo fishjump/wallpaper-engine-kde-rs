@@ -1,11 +1,12 @@
 use std::fmt::{Debug, Formatter};
 use std::fs::File;
-use std::io::{BufReader, SeekFrom};
+use std::io::BufReader;
+
+use anyhow::Result;
 
 use super::package_entry::PackageEntry;
-use super::package_entry_type::PackageEntryType;
-use crate::error::WPEngineError;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
+use crate::wp_error;
 
 pub struct Package {
     pub magic: String,
@@ -14,18 +15,14 @@ pub struct Package {
 }
 
 impl Package {
-    pub fn read_from(reader: &mut BufReader<File>) -> Result<Package, WPEngineError> {
+    pub fn read_from(reader: &mut BufReader<File>) -> Result<Package> {
         let pkg_start = reader.wp_stream_position()?;
 
         let magic_size = reader.wp_read_i32()?;
         let magic = reader.wp_read_string(magic_size as usize)?;
 
         if magic.len() != magic_size as usize {
-            return Err(WPEngineError::RepkgInvalidPakMagicError(format!(
-                "[read_magic_from]magic size mismatch, expected: {}, actual: {}",
-                magic_size,
-                magic.len()
-            )));
+            return wp_error!(RepkgReadSizeMismatchError, magic_size as usize, magic.len());
         }
 
         let entry_count = reader.wp_read_i32()?;

@@ -1,37 +1,34 @@
 use std::fmt::Display;
 
-use crate::error::WPEngineError;
-
 #[derive(Debug, PartialEq, Eq, Hash)]
 pub struct ScenePath {
     path: String,
 }
 
 impl ScenePath {
-    pub fn new(path: &str) -> Result<Self, WPEngineError> {
-        Ok(ScenePath {
-            path: Self::simplify(path)?,
-        })
+    pub fn new(path: &str) -> Self {
+        ScenePath {
+            path: Self::simplify(path),
+        }
     }
 
-    fn simplify(path: &str) -> Result<String, WPEngineError> {
+    fn simplify(path: &str) -> String {
         let mut stack = Vec::new();
         for part in path.split('/') {
             match part {
                 ".." => {
-                    if let None = stack.pop() {
-                        return Err(WPEngineError::VfsMalformPathError(format!(
-                            "too many parent directories, path: {}",
-                            path
-                        )));
-                    };
+                    // if nothing to pop, then it's a relative path
+                    // it's fine, no need an error here
+                    if stack.len() > 0 {
+                        stack.pop();
+                    }
                 }
                 "." => (),
                 _ => stack.push(part),
             }
         }
 
-        Ok(stack.join("/"))
+        stack.join("/")
     }
 }
 

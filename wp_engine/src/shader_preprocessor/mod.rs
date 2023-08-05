@@ -1,3 +1,5 @@
+use anyhow::{Ok, Result};
+
 use crate::error::WPEngineError;
 
 pub struct ShaderPreprocessor {}
@@ -7,7 +9,13 @@ impl ShaderPreprocessor {
         Self {}
     }
 
-    pub fn preprocess(&self, content: &[u8]) -> Result<Vec<u8>, WPEngineError> {
+    pub fn preprocess(&self, content: &[u8]) -> Result<Vec<u8>> {
         todo!()
     }
+}
+
+#[cfg(test)]
+mod test {
+    use anyhow::Result;
+    use thiserror::Error;
 }

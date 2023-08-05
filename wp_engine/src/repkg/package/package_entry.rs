@@ -3,8 +3,9 @@ use std::fs::File;
 use std::io::{BufReader, SeekFrom};
 use std::path::Path;
 
+use anyhow::Result;
+
 use super::package_entry_type::PackageEntryType;
-use crate::error::WPEngineError;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
 
 pub struct PackageEntry {
@@ -16,7 +17,7 @@ pub struct PackageEntry {
 }
 
 impl PackageEntry {
-    pub fn read_from(reader: &mut BufReader<File>) -> Result<PackageEntry, WPEngineError> {
+    pub fn read_from(reader: &mut BufReader<File>) -> Result<PackageEntry> {
         let path_size = reader.wp_read_i32()?;
         let path = reader.wp_read_string(path_size as usize)?;
 
@@ -36,11 +37,7 @@ impl PackageEntry {
         })
     }
 
-    pub fn populate_bytes(
-        &mut self,
-        reader: &mut BufReader<File>,
-        start: u64,
-    ) -> Result<(), WPEngineError> {
+    pub fn populate_bytes(&mut self, reader: &mut BufReader<File>, start: u64) -> Result<()> {
         reader.wp_seek(SeekFrom::Start(start + self.offset))?;
         reader.wp_read_data(&mut self.bytes, self.size as usize)?;
 

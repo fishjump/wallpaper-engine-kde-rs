@@ -1,7 +1,6 @@
 use std::path::Path;
 
 #[derive(Debug)]
-
 pub enum PackageEntryType {
     Binary,
     Tex,

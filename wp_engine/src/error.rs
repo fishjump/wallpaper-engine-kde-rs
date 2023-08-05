@@ -1,65 +1,107 @@
+use std::path::{Path, PathBuf};
+
 use thiserror::Error;
+
+#[macro_export]
+macro_rules! wp_error {
+    ($e:ident) => {
+        Err(crate::error::WPEngineError::$e(stdext::function_name!(), file!(), line!()).into())
+    };
+    ($e:ident, $($arg:expr),*) => {
+        Err(crate::error::WPEngineError::$e(stdext::function_name!(), file!(), line!(),$($arg),*).into())
+    };
+}
 
 #[derive(Error, Debug)]
 pub enum WPEngineError {
     // Vfs errors
-    #[error("VfsFileNotFoundError, reason: {0}")]
-    VfsFileNotFoundError(String),
+    #[error("[{0}]VfsFileNotFoundError, vfs path: {3}, where: {1}:{2}")]
+    VfsFileNotFoundError(&'static str, &'static str, u32, String),
 
-    #[error("VfsMalformPathError, reason: {0}")]
-    VfsMalformPathError(String),
+    #[error("[{0}]VfsFileAlreadyExistsError, reason: {3}, where: {1}:{2}")]
+    VfsReadToStringError(&'static str, &'static str, u32, String),
 
-    #[error("VfsFetchFileError, reason: {0}")]
-    VfsFetchFileError(String),
+    #[error("[{0}]VfsReadToStringError, read from vfs path: {3}, however, the content should be loaded from {4}, but it absences, where: {1}:{2}")]
+    VfsSceneFileDataAbsentError(&'static str, &'static str, u32, String, String),
 
-    #[error("VfsUpstreamError, reason: {0}")]
-    VfsUpstreamError(String),
+    #[error("[{0}]VfsDirEntryError, reason: {3}, where: {1}:{2}")]
+    VfsDirEntryError(&'static str, &'static str, u32, String),
+
+    #[error("[{0}]VfsStripPrefixError, reason: {3}, where: {1}:{2}")]
+    VfsStripPrefixError(&'static str, &'static str, u32, String),
+
+    #[error("[{0}]VfsPathToStrError, path: {3:#?}, where: {1}:{2}")]
+    VfsPathToStrError(&'static str, &'static str, u32, PathBuf),
 
     // Repkg errors
-    #[error("RepkgGenericError, reason: {0}")]
-    RepkgGenericError(String),
+    #[error("[{0}]RepkgGenericError, reason: {3}, where: {1}:{2}")]
+    RepkgGenericError(&'static str, &'static str, u32, String),
 
     // byteorder_ext errors
-    #[error("RepkgReadSizeMismatchError, reason: {0}")]
-    RepkgReadSizeMismatchError(String),
+    #[error("[{0}]RepkgReadSizeMismatchError, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgReadSizeMismatchError(&'static str, &'static str, u32, usize, usize),
 
-    // invalid magic
-    #[error("RepkgInvalidPakMagic, reason: {0}")]
-    RepkgInvalidPakMagicError(String),
+    // invalid magics
+    #[error("[{0}]RepkgInvalidTexMagic1Error, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgInvalidTexMagic1Error(&'static str, &'static str, u32, &'static str, String),
 
-    #[error("RepkgReadDataError, reason: {0}")]
-    RepkgReadDataError(String),
+    #[error("[{0}]RepkgInvalidTexMagic2Error, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgInvalidTexMagic2Error(&'static str, &'static str, u32, &'static str, String),
 
-    #[error("RepkgInvalidTexMagic1, reason: {0}")]
-    RepkgInvalidTexMagic1(String),
+    #[error("[{0}]RepkgInvalidTexImageMagicError, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgInvalidTexImageMagicError(&'static str, &'static str, u32, &'static str, String),
 
-    #[error("RepkgInvalidTexMagic2, reason: {0}")]
-    RepkgInvalidTexMagic2(String),
+    #[error("[{0}]RepkgInvalidTexFrameMagicError, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgInvalidTexFrameMagicError(&'static str, &'static str, u32, &'static str, String),
 
-    #[error("RepkgInvalidTexFormat, reason: {0}")]
-    RepkgInvalidTexFormat(String),
+    // data inconsistency errors
+    #[error("[{0}]RepkgInvalidTexFrameInfoError, expect at least one frame, where: {1}:{2}")]
+    RepkgInvalidTexFrameInfoError(&'static str, &'static str, u32),
 
-    #[error("RepkgInvalidTexFrameMagic, reason: {0}")]
-    RepkgInvalidTexFrameMagic(String),
+    // invalid enums
+    #[error("[{0}]RepkgInvalidTexFormatError, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgInvalidTexFormatError(&'static str, &'static str, u32, &'static str, u8),
 
-    #[error("RepkgInvalidTexFrameInfoError, reason: {0}")]
-    RepkgInvalidTexFrameInfoError(String),
+    #[error("[{0}]RepkgInvalidTexImageContainerVersion, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgInvalidTexImageContainerVersion(&'static str, &'static str, u32, &'static str, u8),
 
-    #[error("RepkgInvalidTexImageContainerVersion, reason: {0}")]
-    RepkgInvalidTexImageContainerVersion(String),
+    #[error("[{0}]RepkgInvalidFreeImageFormat, expect: {3}, actual: {4}, where: {1}:{2}")]
+    RepkgInvalidFreeImageFormat(&'static str, &'static str, u32, &'static str, u8),
 
-    #[error("RepkgInvalidFreeImageFormat, reason: {0}")]
-    RepkgInvalidFreeImageFormat(String),
+    #[error("[{0}]RepkgUnknownMipmapFormatError, where: {1}:{2}")]
+    RepkgUnknownMipmapFormatError(&'static str, &'static str, u32),
 
-    #[error("RepkgInvalidFreeImageFormatError, reason: {0}")]
-    RepkgInvalidFreeImageFormatError(String),
+    // Too many series errors
+    #[error("[{0}]RepkgTooManyTexImagesError, expect {3} ({4}) < {5} ({6}), where: {1}:{2}")]
+    RepkgTooManyTexImagesError(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        i32,
+        &'static str,
+        i32,
+    ),
 
-    #[error("RepkgTooManyTexImagesError, reason: {0}")]
-    RepkgTooManyTexImagesError(String),
+    #[error("[{0}]RepkgTooManyTexMipmapsError, expect {3} ({4}) < {5} ({6}), where: {1}:{2}")]
+    RepkgTooManyTexMipmapsError(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        i32,
+        &'static str,
+        i32,
+    ),
 
-    #[error("RepkgTooManyTexMipmapsError, reason: {0}")]
-    RepkgTooManyTexMipmapsError(String),
-
-    #[error("RepkgTooManyTexFramesError, reason: {0}")]
-    RepkgTooManyTexFramesError(String),
+    #[error("[{0}]RepkgTooManyTexFramesError, expect {3} ({4}) < {5} ({6}), where: {1}:{2}")]
+    RepkgTooManyTexFramesError(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        i32,
+        &'static str,
+        i32,
+    ),
 }

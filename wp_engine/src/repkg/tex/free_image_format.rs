@@ -1,8 +1,9 @@
 use std::u8;
 
+use anyhow::Result;
 use num_enum::TryFromPrimitive;
 
-use crate::error::WPEngineError;
+use crate::wp_error;
 
 #[derive(Debug, TryFromPrimitive, Clone, Copy)]
 #[repr(u8)]
@@ -189,16 +190,17 @@ pub enum FreeImageFormat {
 }
 
 impl FreeImageFormat {
-    pub fn wp_try_from(value: u32) -> Result<Self, WPEngineError> {
+    pub fn wp_try_from(value: u32) -> Result<Self> {
         let value = value as u8;
         let format = Self::try_from(value);
-        if let Err(_) = format {
-            return Err(WPEngineError::RepkgInvalidFreeImageFormat(format!(
-                "invalid tex format: {}",
-                value
-            )));
-        }
 
-        Ok(format.unwrap())
+        match format {
+            Ok(x) => Ok(x),
+            Err(_) => wp_error!(
+                RepkgInvalidFreeImageFormat,
+                "a value between [0, 34]",
+                value
+            ),
+        }
     }
 }

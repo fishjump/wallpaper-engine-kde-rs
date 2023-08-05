@@ -1,9 +1,10 @@
 use std::fs::File;
 use std::io::BufReader;
 
+use anyhow::Result;
+
 use super::tex_flags::TexFlags;
 use super::tex_format::TexFormat;
-use crate::error::WPEngineError;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
 
 #[derive(Debug)]
@@ -18,7 +19,7 @@ pub struct TexHeader {
 }
 
 impl TexHeader {
-    pub fn read_from(reader: &mut BufReader<File>) -> Result<TexHeader, WPEngineError> {
+    pub fn read_from(reader: &mut BufReader<File>) -> Result<TexHeader> {
         let format = reader.wp_read_u32()?;
         let flags = reader.wp_read_u32()?;
         let tex_width = reader.wp_read_i32()?;

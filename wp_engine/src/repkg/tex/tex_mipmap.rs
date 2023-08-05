@@ -2,10 +2,10 @@ use std::fmt::Debug;
 use std::fs::File;
 use std::io::BufReader;
 
-use super::mipmap_format::MipmapFormat;
-use crate::error::WPEngineError;
-use crate::repkg::byteorder_ext::WPReadBytesExt;
+use anyhow::Result;
 
+use super::mipmap_format::MipmapFormat;
+use crate::repkg::byteorder_ext::WPReadBytesExt;
 pub struct TexMipmap {
     pub data: Vec<u8>,
     pub width: i32,
@@ -16,10 +16,7 @@ pub struct TexMipmap {
 }
 
 impl TexMipmap {
-    pub fn read_from_v1(
-        reader: &mut BufReader<File>,
-        format: MipmapFormat,
-    ) -> Result<TexMipmap, WPEngineError> {
+    pub fn read_from_v1(reader: &mut BufReader<File>, format: MipmapFormat) -> Result<TexMipmap> {
         let width = reader.wp_read_i32()?;
         let height = reader.wp_read_i32()?;
 
@@ -37,10 +34,7 @@ impl TexMipmap {
         })
     }
 
-    pub fn read_from_v2v3(
-        reader: &mut BufReader<File>,
-        format: MipmapFormat,
-    ) -> Result<TexMipmap, WPEngineError> {
+    pub fn read_from_v2v3(reader: &mut BufReader<File>, format: MipmapFormat) -> Result<TexMipmap> {
         let width = reader.wp_read_i32()?;
         let height = reader.wp_read_i32()?;
         let is_lz4_compressed = reader.wp_read_i32()? == 1;

@@ -17,6 +17,7 @@ log = "0.4.19"
 num_enum = "0.6.1"
 qmetaobject = "0.2.9"
 qttypes = "0.2.9"
+stdext = "0.3.1"
 thiserror = "1.0.44"
 walkdir = "2.3.3"
 wp_engine_bridge = { path = "../wp_engine_bridge" }

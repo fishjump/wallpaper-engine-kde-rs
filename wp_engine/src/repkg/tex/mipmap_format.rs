@@ -1,6 +1,8 @@
+use anyhow::Result;
+
 use super::free_image_format::FreeImageFormat;
 use super::tex_format::TexFormat;
-use crate::error::WPEngineError;
+use crate::wp_error;
 
 #[derive(Debug, Clone, Copy)]
 pub enum MipmapFormat {
@@ -218,10 +220,7 @@ pub enum MipmapFormat {
 }
 
 impl MipmapFormat {
-    pub fn from(
-        tex_format: TexFormat,
-        image_format: FreeImageFormat,
-    ) -> Result<MipmapFormat, WPEngineError> {
+    pub fn from(tex_format: TexFormat, image_format: FreeImageFormat) -> Result<MipmapFormat> {
         match image_format {
             FreeImageFormat::FifUnknown => Ok(match tex_format {
                 TexFormat::RGBA8888 => MipmapFormat::RGBA8888,
@@ -235,13 +234,10 @@ impl MipmapFormat {
         }
     }
 
-    fn from_image_format(image_format: FreeImageFormat) -> Result<MipmapFormat, WPEngineError> {
+    fn from_image_format(image_format: FreeImageFormat) -> Result<MipmapFormat> {
         Ok(match image_format {
             FreeImageFormat::FifUnknown => {
-                return Err(WPEngineError::RepkgInvalidFreeImageFormatError(format!(
-                    "invalid free image format: {:#?}",
-                    image_format
-                )));
+                return wp_error!(RepkgUnknownMipmapFormatError);
             }
             FreeImageFormat::FifBmp => MipmapFormat::ImageBMP,
             FreeImageFormat::FifIco => MipmapFormat::ImageICO,
