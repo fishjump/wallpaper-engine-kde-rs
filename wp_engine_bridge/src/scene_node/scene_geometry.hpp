@@ -5,29 +5,25 @@
 #include <QtGui/QColor>
 #include <QtQuick/QSGGeometry>
 
-#include <iostream>
+#include "scene_shader.hpp"
 
 class SceneGeometry : public QSGGeometry {
 
 public:
-  SceneGeometry()
-      : QSGGeometry(QSGGeometry::defaultAttributes_ColoredPoint2D(), 3) {}
+  SceneGeometry() : QSGGeometry(AttrColoredPoint2DWithTexCoord, 6) {}
 
   void updateVertexData(const QRectF &rect, const QColor colors[3]) {
     this->setDrawingMode(GL_TRIANGLES);
 
-    auto *vertices = this->vertexDataAsColoredPoint2D();
+    auto *vertices = (ColoredPoint2DWithTexCoord *)this->vertexData();
 
-    // WTF Qt? ColoredPoint2D converts color to float, though I'm setting the
-    // "VBO" Qt shouldn't do this implicit conversion. Everyone knows the range
-    // is 0 to 1.0
-    // Here costs me ~ 1 hour to debug
-    vertices[0].set(rect.right() / 2, rect.top(), colors[0].red(),
-                    colors[0].green(), colors[0].blue(), colors[0].alpha());
-    vertices[1].set(rect.right(), rect.bottom(), colors[1].red(),
-                    colors[1].green(), colors[1].blue(), colors[1].alpha());
-    vertices[2].set(rect.left(), rect.bottom(), colors[2].red(),
-                    colors[2].green(), colors[2].blue(), colors[2].alpha());
+    vertices[0].set(rect.right(), rect.top(), 0.0, 1.0, 0.0, 0.0,     1.0, 0.0);
+    vertices[1].set(rect.right(), rect.bottom(), 0.0, 1.0, 1.0, 0.0,  1.0, 1.0);
+    vertices[2].set(rect.left(), rect.top(), 0.0, 1.0, 0.0, 1.0,      0.0, 0.0);
+
+    vertices[3].set(rect.left(), rect.bottom(), 0.0, 1.0, 1.0, 1.0,   0.0, 1.0);
+    vertices[4].set(rect.left(), rect.top(), 0.0, 1.0, 0.0, 1.0,      0.0, 0.0);
+    vertices[5].set(rect.right(), rect.bottom(), 0.0, 1.0, 1.0, 0.0,  1.0, 1.0);
   }
 };
 

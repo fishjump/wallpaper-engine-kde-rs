@@ -23,7 +23,7 @@ I am trying to create a wallpaper engine for KDE using Rust for some reasons:
 ## Other things to do
 
 - [ ] Logger, watch debug output in the plasma shell.
-- [ ] Switch to `anyhow` for error handling.
+- [x] Switch to `anyhow` for error handling.
 
 ## Notes
 

@@ -1,7 +1,10 @@
+use std::os::raw::c_void;
+
 use qmetaobject::prelude::*;
 use qmetaobject::scenegraph::{ContainerNode, SGNode};
+use qttypes::{ImageFormat, QImage, QSize};
 use wp_engine_bridge::qtdeclarative_ext::qquick_item_ext::{QQuickItemExt, QQuickItemFlag};
-use wp_engine_bridge::scene_node::{SceneNode, SceneNodeTrait};
+use wp_engine_bridge::scene_node::{pass_window_to_c, SceneNode, SceneNodeTrait};
 
 #[derive(QObject, Default)]
 pub struct SceneRenderer {
@@ -20,6 +23,8 @@ impl QQuickItem for SceneRenderer {
             QColor::from_rgb(0, 255, 0),
             QColor::from_rgb(0, 0, 255),
         ];
+
+        pass_window_to_c(self.get_cpp_object() );
 
         node.update_static(|mut n: SGNode<SceneNode>| -> SGNode<SceneNode> {
             n.new_if_null().update_state(rect, colors);

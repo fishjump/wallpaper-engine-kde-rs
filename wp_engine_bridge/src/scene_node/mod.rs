@@ -2,11 +2,22 @@ use std::os::raw::c_void;
 
 use cpp::cpp;
 use qmetaobject::scenegraph::SGNode;
+use qmetaobject::QQuickItem;
 use qttypes::{QColor, QRectF};
+
+use crate::scenegraph_ext::texture::{self, Texture};
+use crate::utils::AsRawPtr;
 
 cpp! {{
     #include "src/scene_node/scene_node.cpp"
+    #include "src/scene_node/scene_shader.cpp"
 }}
+
+pub fn pass_window_to_c(qquickitem: *mut c_void) {
+    cpp!(unsafe [qquickitem as "QQuickItem *"] {
+        window = qquickitem->window();
+    });
+}
 
 pub struct SceneNode {}
 

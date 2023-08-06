@@ -16,6 +16,7 @@ public:
   ~SceneNode();
 
   void updateState(const QRectF &rect, const QColor colors[3]);
+  void setTexture(QSGTexture *texture);
 };
 
 #endif // __SCENE_NODE_HPP

@@ -1,7 +1,44 @@
 #ifndef __SCENE_SHADER_HPP
 #define __SCENE_SHADER_HPP
 
+#include <QtQuick/QSGGeometry>
 #include <QtQuick/QSGMaterialShader>
+
+__attribute__((packed)) struct ColoredPoint2DWithTexCoord {
+  float x;
+  float y;
+  float z;
+
+  float r;
+  float g;
+  float b;
+
+  float u;
+  float v;
+
+  void set(float x, float y, float z, float r, float g, float b, float u,
+           float v) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+
+    this->r = r;
+    this->g = g;
+    this->b = b;
+
+    this->u = u;
+    this->v = v;
+  }
+};
+
+QSGGeometry::Attribute attributes[] = {
+    QSGGeometry::Attribute::create(0, 3, GL_FLOAT, true),  // aPos
+    QSGGeometry::Attribute::create(1, 3, GL_FLOAT, false), // aColor
+    QSGGeometry::Attribute::create(2, 2, GL_FLOAT, false)  // aTexCoord
+};
+
+QSGGeometry::AttributeSet AttrColoredPoint2DWithTexCoord = {
+    3, sizeof(ColoredPoint2DWithTexCoord), attributes};
 
 class SceneShader : public QSGMaterialShader {
 private:
@@ -11,71 +48,32 @@ private:
 
   int __qt_Matrix_id;
   int __qt_Opacity_id;
+  int __g_Texture0_id;
+  int __g_Texture1_id;
+
+  QImage *__g_Texture0_image;
+  QSGTexture *__g_Texture0;
+
+  QImage *__g_Texture1_image;
+  QSGTexture *__g_Texture1;
 
   // To have these two members, we can guarantee this class owns the data
   mutable QByteArray __attributeNameData;
   mutable QVector<const char *> __attributePointers;
 
 public:
-  SceneShader(const QString &vertexShader, const QString &fragmentShader,
-              const QList<QByteArray> &attributeNames)
-      : __vertexShader(vertexShader), __fragmentShader(fragmentShader),
-        __attributeNames(attributeNames) {}
+  SceneShader(const QString &vertexShader, const QString &fragmentShader);
 
-  const char *vertexShader() const override {
-    return __vertexShader.toUtf8().constData();
-  }
+  const char *vertexShader() const override;
 
-  const char *fragmentShader() const override {
-    return __fragmentShader.toUtf8().constData();
-  }
+  const char *fragmentShader() const override;
 
-  char const *const *attributeNames() const override {
-    // This segment of code is copied from qsgsimplematerial.h
+  char const *const *attributeNames() const override;
 
-    if (__attributeNameData.size()) {
-      return __attributePointers.constData();
-    }
-
-    // Calculate the total number of bytes needed, so we don't get rellocs and
-    // bad pointers while copying over the individual names.
-    // Add an extra byte pr entry for the '\0' char.
-    int total = 0;
-    for (int i = 0; i < __attributeNames.size(); ++i) {
-      total += __attributeNames.at(i).size() + 1;
-    }
-    __attributeNameData.reserve(total);
-
-    // Copy over the names
-    for (int i = 0; i < __attributeNames.size(); ++i) {
-      __attributePointers.append(__attributeNameData.constData() +
-                                 __attributeNameData.size());
-      __attributeNameData.append(__attributeNames.at(i));
-      __attributeNameData.append('\0');
-    }
-
-    // Append the "null" terminator
-    __attributePointers.append(0);
-
-    return __attributePointers.constData();
-  }
-
-  void initialize() override {
-    QSGMaterialShader::initialize();
-    __qt_Matrix_id = program()->uniformLocation("qt_Matrix");
-    __qt_Opacity_id = program()->uniformLocation("qt_Opacity");
-  }
+  void initialize() override;
 
   void updateState(const RenderState &state, QSGMaterial *newMaterial,
-                   QSGMaterial *oldMaterial) override {
-    Q_ASSERT(program()->isLinked());
-    if (state.isMatrixDirty()) {
-      program()->setUniformValue(__qt_Matrix_id, state.combinedMatrix());
-    }
-    if (state.isOpacityDirty()) {
-      program()->setUniformValue(__qt_Opacity_id, state.opacity());
-    }
-  }
+                   QSGMaterial *oldMaterial) override;
 };
 
 #endif // __SCENE_SHADER_HPP

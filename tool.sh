@@ -50,11 +50,27 @@ function remove() {
     plasmapkg2 -r ${TARGET}/plugin
 }
 
+function view() {
+    if  is_release; then
+        TARGET="${BASE}/target/release"
+    else
+        TARGET="${BASE}/target/debug"
+    fi
+
+    qmlscene ${TARGET}/plugin/contents/ui/main.qml
+}
+
+function build() {
+    cargo clean && cargo build
+}
+
 function help() {
-    echo "Usage: install.sh [-i] [-r] [-p]"
+    echo "Usage: install.sh [-b] [-i] [-r] [-p] [-v] [-h]"
+    echo "  -b  Build"
     echo "  -i  Install"
     echo "  -r  Remove"
     echo "  -p  Package"
+    echo "  -v  View"
     echo "  -h  Help"
 }
 
@@ -64,8 +80,11 @@ function main() {
         return 0
     fi  
 
-    while getopts "irph" opt; do
+    while getopts "birpvh" opt; do
         case ${opt} in
+            b) 
+                build
+                ;;
             i) 
                 install
                 ;;
@@ -74,6 +93,9 @@ function main() {
                 ;;
             p) 
                 package
+                ;;
+            v)
+                view
                 ;;
             h)
                 help
