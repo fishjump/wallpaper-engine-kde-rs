@@ -12,7 +12,7 @@ class SceneGeometry : public QSGGeometry {
 public:
   SceneGeometry() : QSGGeometry(AttrColoredPoint2DWithTexCoord, 6) {}
 
-  void updateVertexData(const QRectF &rect, const QColor colors[3]) {
+  void updateState(const QRectF &rect) {
     this->setDrawingMode(GL_TRIANGLES);
 
     auto *vertices = (ColoredPoint2DWithTexCoord *)this->vertexData();

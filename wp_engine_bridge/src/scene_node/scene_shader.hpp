@@ -4,6 +4,8 @@
 #include <QtQuick/QSGGeometry>
 #include <QtQuick/QSGMaterialShader>
 
+#include "texture_spec.hpp"
+
 __attribute__((packed)) struct ColoredPoint2DWithTexCoord {
   float x;
   float y;
@@ -32,9 +34,9 @@ __attribute__((packed)) struct ColoredPoint2DWithTexCoord {
 };
 
 QSGGeometry::Attribute attributes[] = {
-    QSGGeometry::Attribute::create(0, 3, GL_FLOAT, true),  // aPos
-    QSGGeometry::Attribute::create(1, 3, GL_FLOAT, false), // aColor
-    QSGGeometry::Attribute::create(2, 2, GL_FLOAT, false)  // aTexCoord
+    QSGGeometry::Attribute::create(0, 3, GL_FLOAT, true),  // a_Position
+    QSGGeometry::Attribute::create(1, 3, GL_FLOAT, false), // a_Color
+    QSGGeometry::Attribute::create(2, 2, GL_FLOAT, false)  // a_TexCoord
 };
 
 QSGGeometry::AttributeSet AttrColoredPoint2DWithTexCoord = {
@@ -42,27 +44,21 @@ QSGGeometry::AttributeSet AttrColoredPoint2DWithTexCoord = {
 
 class SceneShader : public QSGMaterialShader {
 private:
-  const QString __vertexShader;
-  const QString __fragmentShader;
-  const QList<QByteArray> __attributeNames;
+  const char *__vertexShader;
+  const char *__fragmentShader;
 
-  int __qt_Matrix_id;
-  int __qt_Opacity_id;
-  int __g_Texture0_id;
-  int __g_Texture1_id;
+  int __g_Texture_id[g_TextureCount];
+  int __g_TextureResolution_id[g_TextureCount];
+  int __g_TextureRotation_id[g_TextureCount];
+  int __g_TextureTranslation_id[g_TextureCount];
+  int __g_TextureMipMapInfo_id[g_TextureCount];
+  QImage *__g_Texture_image[g_TextureCount];
+  QSGTexture *__g_Texture[g_TextureCount];
 
-  QImage *__g_Texture0_image;
-  QSGTexture *__g_Texture0;
-
-  QImage *__g_Texture1_image;
-  QSGTexture *__g_Texture1;
-
-  // To have these two members, we can guarantee this class owns the data
-  mutable QByteArray __attributeNameData;
-  mutable QVector<const char *> __attributePointers;
+  std::map<const char *, GLuint> __g_WPAttribute_id;
 
 public:
-  SceneShader(const QString &vertexShader, const QString &fragmentShader);
+  SceneShader(const char *vertexShader, const char *fragmentShader);
 
   const char *vertexShader() const override;
 

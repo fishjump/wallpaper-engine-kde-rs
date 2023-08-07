@@ -10,8 +10,7 @@ Rectangle {
     visible: true
 
     SceneRenderer {
-        width: 200
-        height: 200
+        id: renderer
         anchors.fill: parent
     }
 
@@ -25,6 +24,16 @@ Rectangle {
         anchors.centerIn: parent
         // Call a method
         text: greeter.compute_greetings(wallpaper.configuration.verb)
+    }
+
+    Timer {
+        id: timer
+        interval: 16
+        repeat: true
+        running: true
+        onTriggered: {
+            renderer.timer_inc(0.016);
+        }
     }
 
 }

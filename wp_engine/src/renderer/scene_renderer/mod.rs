@@ -9,6 +9,19 @@ use wp_engine_bridge::scene_node::{pass_window_to_c, SceneNode, SceneNodeTrait};
 #[derive(QObject, Default)]
 pub struct SceneRenderer {
     base: qt_base_class!(trait QQuickItem),
+    timer_inc: qt_method!(
+        fn timer_inc(&mut self, interval: f32) {
+            self.time += interval;
+            (self as &dyn QQuickItem).update();
+        }
+    ),
+    time: f32,
+}
+
+impl SceneRenderer {
+    fn time(&self) -> f32 {
+        self.time
+    }
 }
 
 impl QQuickItem for SceneRenderer {
@@ -18,16 +31,11 @@ impl QQuickItem for SceneRenderer {
 
     fn update_paint_node(&mut self, mut node: SGNode<ContainerNode>) -> SGNode<ContainerNode> {
         let rect = (self as &dyn QQuickItem).bounding_rect();
-        let colors = [
-            QColor::from_rgb(255, 0, 0),
-            QColor::from_rgb(0, 255, 0),
-            QColor::from_rgb(0, 0, 255),
-        ];
 
-        pass_window_to_c(self.get_cpp_object() );
+        pass_window_to_c(self.get_cpp_object());
 
         node.update_static(|mut n: SGNode<SceneNode>| -> SGNode<SceneNode> {
-            n.new_if_null().update_state(rect, colors);
+            n.new_if_null().update_state(rect, self.time());
 
             n
         });

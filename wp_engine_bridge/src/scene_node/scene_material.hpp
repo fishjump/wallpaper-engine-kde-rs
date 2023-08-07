@@ -8,12 +8,14 @@
 
 class SceneMaterial : public QSGMaterial {
 private:
-  const QString __vertexShader;
-  const QString __fragmentShader;
+  const char *__vertexShader;
+  const char *__fragmentShader;
+  float __time;
 
 public:
-  SceneMaterial(const QString &vertexShader, const QString &fragmentShader)
-      : __vertexShader(vertexShader), __fragmentShader(fragmentShader) {}
+  SceneMaterial(const char *vertexShader, const char *fragmentShader)
+      : __vertexShader(vertexShader), __fragmentShader(fragmentShader),
+        __time(0.0) {}
 
   QSGMaterialType *type() const override {
     static QSGMaterialType type;
@@ -23,6 +25,10 @@ public:
   QSGMaterialShader *createShader() const override {
     return new SceneShader(__vertexShader, __fragmentShader);
   }
+
+  void updateState(float time) { __time = time; }
+
+  float time() { return __time; }
 };
 
 #endif // __SCENE_MATERIAL_HPP

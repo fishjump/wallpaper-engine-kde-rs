@@ -2,11 +2,7 @@ use std::os::raw::c_void;
 
 use cpp::cpp;
 use qmetaobject::scenegraph::SGNode;
-use qmetaobject::QQuickItem;
 use qttypes::{QColor, QRectF};
-
-use crate::scenegraph_ext::texture::{self, Texture};
-use crate::utils::AsRawPtr;
 
 cpp! {{
     #include "src/scene_node/scene_node.cpp"
@@ -23,7 +19,7 @@ pub struct SceneNode {}
 
 pub trait SceneNodeTrait {
     fn new_if_null(&mut self) -> &mut Self;
-    fn update_state(&mut self, rect: QRectF, colors: [QColor; 3]) -> &mut Self;
+    fn update_state(&mut self, rect: QRectF, time: f32) -> &mut Self;
 }
 
 impl SceneNodeTrait for SGNode<SceneNode> {
@@ -39,15 +35,14 @@ impl SceneNodeTrait for SGNode<SceneNode> {
         self
     }
 
-    fn update_state(&mut self, rect: QRectF, colors: [QColor; 3]) -> &mut SGNode<SceneNode> {
+    fn update_state(&mut self, rect: QRectF, time: f32) -> &mut SGNode<SceneNode> {
         if self.raw.is_null() {
             return self;
         }
 
         let raw = self.raw;
-        let colors = colors.as_ptr();
-        cpp! (unsafe [raw as "SceneNode *", rect as "QRectF", colors as "QColor const *"] {
-            raw->updateState(rect, colors);
+        cpp! (unsafe [raw as "SceneNode *", rect as "QRectF", time as "float"] {
+            raw->updateState(rect, time);
         });
 
         self
