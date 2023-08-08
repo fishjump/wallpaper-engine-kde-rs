@@ -6,7 +6,7 @@ use anyhow::Result;
 use super::constant;
 use super::tex_frame_info::TexFrameInfo;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug, Default)]
 pub struct TexFrameInfoContainer {
@@ -22,7 +22,7 @@ impl TexFrameInfoContainer {
 
         let frame_count = reader.wp_read_i32()?;
         if frame_count > constant::MAXIMUM_FRAME_COUNT {
-            return wp_error!(
+            return wp_result!(
                 RepkgTooManyTexFramesError,
                 stringify!(frame_count),
                 frame_count,
@@ -39,7 +39,7 @@ impl TexFrameInfoContainer {
                 (width, height)
             }
             _ => {
-                return wp_error!(
+                return wp_result!(
                     RepkgInvalidTexFrameMagicError,
                     "one of [TEXS0001, TEXS0002, TEXS0003]",
                     magic
@@ -54,7 +54,7 @@ impl TexFrameInfoContainer {
                 "TEXS0001" => TexFrameInfo::read_from_v1(reader)?,
                 "TEXS0002" | "TEXS0003" => TexFrameInfo::read_from_v2v3(reader)?,
                 _ => {
-                    return wp_error!(
+                    return wp_result!(
                         RepkgInvalidTexFrameMagicError,
                         "one of [TEXS0001, TEXS0002, TEXS0003]",
                         magic
@@ -72,7 +72,7 @@ impl TexFrameInfoContainer {
                     TexFrameInfo::V2V3(x) => (x.width as i32, x.height as i32),
                 };
             } else {
-                return wp_error!(RepkgInvalidTexFrameInfoError);
+                return wp_result!(RepkgInvalidTexFrameInfoError);
             }
         }
 

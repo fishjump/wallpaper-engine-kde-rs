@@ -1,7 +1,7 @@
 use anyhow::Result;
 use num_enum::TryFromPrimitive;
 
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug, TryFromPrimitive, Clone, Copy)]
 #[repr(u8)]
@@ -21,7 +21,7 @@ impl TexFormat {
 
         match format {
             Ok(x) => Ok(x),
-            Err(_) => wp_error!(
+            Err(_) => wp_result!(
                 RepkgInvalidTexFormatError,
                 "one of [RGBA8888(0), DXT5(4), DXT3(6), DXT1(7), RG88(8), R8(9))]",
                 value

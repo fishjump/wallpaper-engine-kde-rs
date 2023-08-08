@@ -3,7 +3,7 @@ use std::u8;
 use anyhow::Result;
 use num_enum::TryFromPrimitive;
 
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug, TryFromPrimitive, Clone, Copy)]
 #[repr(u8)]
@@ -196,7 +196,7 @@ impl FreeImageFormat {
 
         match format {
             Ok(x) => Ok(x),
-            Err(_) => wp_error!(
+            Err(_) => wp_result!(
                 RepkgInvalidFreeImageFormat,
                 "a value between [0, 34]",
                 value

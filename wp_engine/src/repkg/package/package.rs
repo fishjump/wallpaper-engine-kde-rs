@@ -6,7 +6,7 @@ use anyhow::Result;
 
 use super::package_entry::PackageEntry;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
-use crate::wp_error;
+use crate::wp_result;
 
 pub struct Package {
     pub magic: String,
@@ -22,7 +22,7 @@ impl Package {
         let magic = reader.wp_read_string(magic_size as usize)?;
 
         if magic.len() != magic_size as usize {
-            return wp_error!(RepkgReadSizeMismatchError, magic_size as usize, magic.len());
+            return wp_result!(RepkgReadSizeMismatchError, magic_size as usize, magic.len());
         }
 
         let entry_count = reader.wp_read_i32()?;

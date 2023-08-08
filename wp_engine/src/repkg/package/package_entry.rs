@@ -37,9 +37,13 @@ impl PackageEntry {
         })
     }
 
-    pub fn populate_bytes(&mut self, reader: &mut BufReader<File>, start: u64) -> Result<()> {
+    pub fn populate_bytes(
+        &mut self,
+        reader: &mut BufReader<File>,
+        start: u64,
+    ) -> Result<()> {
         reader.wp_seek(SeekFrom::Start(start + self.offset))?;
-        reader.wp_read_data(&mut self.bytes, self.size as usize)?;
+        reader.wp_read_data(&mut self.bytes)?;
 
         Ok(())
     }

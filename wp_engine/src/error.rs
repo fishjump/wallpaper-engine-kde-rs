@@ -1,14 +1,24 @@
-use std::path::{Path, PathBuf};
+use std::path::PathBuf;
 
 use thiserror::Error;
 
 #[macro_export]
-macro_rules! wp_error {
+macro_rules! wp_result {
     ($e:ident) => {
         Err(crate::error::WPEngineError::$e(stdext::function_name!(), file!(), line!()).into())
     };
     ($e:ident, $($arg:expr),*) => {
         Err(crate::error::WPEngineError::$e(stdext::function_name!(), file!(), line!(),$($arg),*).into())
+    };
+}
+
+#[macro_export]
+macro_rules! wp_error {
+    ($e:ident) => {
+       crate::error::WPEngineError::$e(stdext::function_name!(), file!(), line!()).into()
+    };
+    ($e:ident, $($arg:expr),*) => {
+        crate::error::WPEngineError::$e(stdext::function_name!(), file!(), line!(),$($arg),*).into()
     };
 }
 

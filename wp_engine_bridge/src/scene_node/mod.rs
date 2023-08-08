@@ -2,7 +2,7 @@ use std::os::raw::c_void;
 
 use cpp::cpp;
 use qmetaobject::scenegraph::SGNode;
-use qttypes::{QColor, QRectF};
+use qttypes::QRectF;
 
 cpp! {{
     #include "src/scene_node/scene_node.cpp"
@@ -35,7 +35,11 @@ impl SceneNodeTrait for SGNode<SceneNode> {
         self
     }
 
-    fn update_state(&mut self, rect: QRectF, time: f32) -> &mut SGNode<SceneNode> {
+    fn update_state(
+        &mut self,
+        rect: QRectF,
+        time: f32,
+    ) -> &mut SGNode<SceneNode> {
         if self.raw.is_null() {
             return self;
         }

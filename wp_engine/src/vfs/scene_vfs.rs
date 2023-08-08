@@ -8,7 +8,7 @@ use walkdir::WalkDir;
 use super::scene_file::{SceneFile, SceneFileContent};
 use super::scene_path::ScenePath;
 use crate::error::WPEngineError;
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug)]
 pub struct SceneVFS {
@@ -39,7 +39,7 @@ impl SceneVFS {
 
         for entry in dir {
             if let Err(err) = entry {
-                return wp_error!(VfsDirEntryError, err.to_string());
+                return wp_result!(VfsDirEntryError, err.to_string());
             }
 
             let entry = entry.unwrap();
@@ -49,14 +49,14 @@ impl SceneVFS {
 
             let relative = entry.path().strip_prefix(from);
             if let Err(err) = relative {
-                return wp_error!(VfsStripPrefixError, err.to_string());
+                return wp_result!(VfsStripPrefixError, err.to_string());
             }
 
             let relative = relative.unwrap();
             let to = format!("{}/{}", to, relative.to_str().unwrap());
             let from = entry.path().to_str();
             if let None = from {
-                return wp_error!(VfsPathToStrError, entry.path().to_path_buf());
+                return wp_result!(VfsPathToStrError, entry.path().to_path_buf());
             }
 
             self.mount(to.as_str(), from.unwrap());
@@ -71,7 +71,7 @@ impl SceneVFS {
         let mut map = self.files.write().unwrap();
         let file = map.get_mut(&path);
         if file.is_none() {
-            return wp_error!(VfsFileNotFoundError, path.to_string());
+            return wp_result!(VfsFileNotFoundError, path.to_string());
         }
 
         let file = file.unwrap();
@@ -88,7 +88,7 @@ impl SceneVFS {
             match content {
                 Ok(c) => c,
                 Err(err) => {
-                    return wp_error!(VfsReadToStringError, err.to_string());
+                    return wp_result!(VfsReadToStringError, err.to_string());
                 }
             }
         });
@@ -113,7 +113,7 @@ impl SceneVFS {
             let map = self.files.read().unwrap();
             let file = map.get(&path);
             if file.is_none() {
-                return wp_error!(VfsFileNotFoundError, path.to_string());
+                return wp_result!(VfsFileNotFoundError, path.to_string());
             }
 
             let file = file.unwrap();

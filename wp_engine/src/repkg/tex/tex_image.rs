@@ -10,7 +10,7 @@ use super::tex_format::TexFormat;
 use super::tex_image_container::TexImageContainerVersion;
 use super::tex_mipmap::TexMipmap;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug)]
 pub struct TexImage {
@@ -26,7 +26,7 @@ impl TexImage {
     ) -> Result<TexImage> {
         let mipmap_count = reader.wp_read_i32()?;
         if mipmap_count > constant::MAXIMUM_MIPMAP_COUNT {
-            return wp_error!(
+            return wp_result!(
                 RepkgTooManyTexMipmapsError,
                 stringify!(mipmap_count),
                 mipmap_count,

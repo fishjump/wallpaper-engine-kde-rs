@@ -8,7 +8,7 @@ use super::tex_frame_info_container::TexFrameInfoContainer;
 use super::tex_header::TexHeader;
 use super::tex_image_container::TexImageContainer;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug)]
 pub struct Tex {
@@ -23,12 +23,12 @@ impl Tex {
     pub fn read_from(reader: &mut BufReader<File>) -> Result<Tex> {
         let magic1 = reader.wp_read_string_dyn()?;
         if magic1 != "TEXV0005" {
-            return wp_error!(RepkgInvalidTexMagic1Error, "TEXV0005", magic1);
+            return wp_result!(RepkgInvalidTexMagic1Error, "TEXV0005", magic1);
         }
 
         let magic2 = reader.wp_read_string_dyn()?;
         if magic2 != "TEXI0001" {
-            return wp_error!(RepkgInvalidTexMagic2Error, "TEXI0001", magic2);
+            return wp_result!(RepkgInvalidTexMagic2Error, "TEXI0001", magic2);
         }
 
         let header = TexHeader::read_from(reader)?;

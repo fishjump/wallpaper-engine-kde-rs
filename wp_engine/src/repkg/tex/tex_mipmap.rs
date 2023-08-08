@@ -16,13 +16,16 @@ pub struct TexMipmap {
 }
 
 impl TexMipmap {
-    pub fn read_from_v1(reader: &mut BufReader<File>, format: MipmapFormat) -> Result<TexMipmap> {
+    pub fn read_from_v1(
+        reader: &mut BufReader<File>,
+        format: MipmapFormat,
+    ) -> Result<TexMipmap> {
         let width = reader.wp_read_i32()?;
         let height = reader.wp_read_i32()?;
 
         let data_count = reader.wp_read_i32()?;
         let mut data = vec![0u8; data_count as usize];
-        reader.wp_read_data(&mut data, data_count as usize)?;
+        reader.wp_read_data(&mut data)?;
 
         Ok(TexMipmap {
             data,
@@ -34,7 +37,10 @@ impl TexMipmap {
         })
     }
 
-    pub fn read_from_v2v3(reader: &mut BufReader<File>, format: MipmapFormat) -> Result<TexMipmap> {
+    pub fn read_from_v2v3(
+        reader: &mut BufReader<File>,
+        format: MipmapFormat,
+    ) -> Result<TexMipmap> {
         let width = reader.wp_read_i32()?;
         let height = reader.wp_read_i32()?;
         let is_lz4_compressed = reader.wp_read_i32()? == 1;
@@ -42,7 +48,7 @@ impl TexMipmap {
 
         let data_count = reader.wp_read_i32()?;
         let mut data = vec![0u8; data_count as usize];
-        reader.wp_read_data(&mut data, data_count as usize)?;
+        reader.wp_read_data(&mut data)?;
 
         Ok(TexMipmap {
             data,

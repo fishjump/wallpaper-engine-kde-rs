@@ -2,7 +2,7 @@ use anyhow::Result;
 
 use super::free_image_format::FreeImageFormat;
 use super::tex_format::TexFormat;
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug, Clone, Copy)]
 pub enum MipmapFormat {
@@ -237,7 +237,7 @@ impl MipmapFormat {
     fn from_image_format(image_format: FreeImageFormat) -> Result<MipmapFormat> {
         Ok(match image_format {
             FreeImageFormat::FifUnknown => {
-                return wp_error!(RepkgUnknownMipmapFormatError);
+                return wp_result!(RepkgUnknownMipmapFormatError);
             }
             FreeImageFormat::FifBmp => MipmapFormat::ImageBMP,
             FreeImageFormat::FifIco => MipmapFormat::ImageICO,

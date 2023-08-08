@@ -9,7 +9,7 @@ use super::free_image_format::FreeImageFormat;
 use super::tex_format::TexFormat;
 use super::tex_image::TexImage;
 use crate::repkg::byteorder_ext::WPReadBytesExt;
-use crate::wp_error;
+use crate::wp_result;
 
 #[derive(Debug)]
 pub struct TexImageContainer {
@@ -28,7 +28,7 @@ impl TexImageContainer {
 
         let image_count = reader.wp_read_i32()?;
         if image_count > constant::MAXIMUM_IMAGE_COUNT {
-            return wp_error!(
+            return wp_result!(
                 RepkgTooManyTexImagesError,
                 stringify!(image_count),
                 image_count,
@@ -41,7 +41,7 @@ impl TexImageContainer {
             "TEXB0001" | "TEXB0002" => FreeImageFormat::FifUnknown,
             "TEXB0003" => FreeImageFormat::wp_try_from(reader.wp_read_u32()?)?,
             _ => {
-                return wp_error!(
+                return wp_result!(
                     RepkgInvalidTexImageMagicError,
                     "one of [TEXB0001, TEXB0002, TEXB0003]",
                     magic
@@ -54,7 +54,7 @@ impl TexImageContainer {
             "TEXB0002" => TexImageContainerVersion::Version2,
             "TEXB0003" => TexImageContainerVersion::Version3,
             _ => {
-                return wp_error!(
+                return wp_result!(
                     RepkgInvalidTexImageMagicError,
                     "one of [TEXB0001, TEXB0002, TEXB0003]",
                     magic
@@ -91,7 +91,7 @@ impl TexImageContainerVersion {
         let value = value as u8;
         match Self::try_from(value) {
             Ok(v) => Ok(v),
-            Err(_) => wp_error!(
+            Err(_) => wp_result!(
                 RepkgInvalidTexImageContainerVersion,
                 "one of [1, 2, 3]",
                 value

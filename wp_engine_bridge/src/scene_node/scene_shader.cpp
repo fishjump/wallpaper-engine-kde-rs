@@ -88,16 +88,17 @@ void SceneShader::updateState(const RenderState &state,
   program()->setUniformValue("g_Strength", 0.029999999f);
   program()->setUniformValue("g_Perspective", 0.003f);
 
+  auto f = QOpenGLContext::currentContext()->functions();
   for (size_t i = 0; i < g_TextureCount; i++) {
     if (__g_Texture[i] == nullptr) {
       continue;
     }
 
     program()->setUniformValue(__g_Texture_id[i], (GLuint)i);
-    glActiveTexture(GL_TEXTURE0 + i);
+    f->glActiveTexture(GL_TEXTURE0 + i);
     __g_Texture[i]->bind();
   }
 
   // reset to GL_TEXTURE0, the default
-  glActiveTexture(GL_TEXTURE0);
+  f->glActiveTexture(GL_TEXTURE0);
 }
