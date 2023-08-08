@@ -16,9 +16,11 @@ I am trying to create a wallpaper engine for KDE using Rust for some reasons:
 - [x] Render the wallpaper using Qt GSNode.
 - [x] Render a triangle using OpenGL and Qt.
 - [x] VFS to load local assets and unpacked assets from the scene file.
-- [ ] Hardcode to render a walllpaper from the steam workshop.
+- [x] Hardcode to render a walllpaper from the steam workshop.
 - [x] Scene unpacker, see [RePkg](https://github.com/notscuffed/repkg)
 - [ ] Shader preprocessor, inc `#include`, `// [COMBO]`
+- [ ] JSON parser to load the `scene.json` file.
+- [ ] Rewrite the renderer part, because it may contain multiple scene objects.
 
 ## Other things to do
 
