@@ -5,17 +5,18 @@ use super::wp_material::{WPMaterial, WPMaterialPass};
 #[derive(Debug, Deserialize, Serialize, Default)]
 #[serde(default)]
 pub struct WPImageEffect {
-    id: i32,
-    name: String,
+    pub file: String,
+    pub id: i32,
+    pub name: String,
 
     #[serde(default = "default_visible")]
-    visible: bool,
+    pub visible: bool,
 
-    version: i32,
-    materials: Vec<WPMaterial>,
-    passes: Vec<WPMaterialPass>,
-    commands: Vec<WPEffectCommand>,
-    fbos: Vec<WPEffectFbo>,
+    pub version: i32,
+    pub materials: Vec<WPMaterial>,
+    pub passes: Vec<WPMaterialPass>,
+    pub commands: Vec<WPEffectCommand>,
+    pub fbos: Vec<WPEffectFbo>,
 }
 
 #[derive(Debug, Deserialize, Serialize, Default)]

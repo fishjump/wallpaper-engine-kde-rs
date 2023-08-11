@@ -21,6 +21,8 @@ impl ScenePath {
                     // it's fine, no need an error here
                     if stack.len() > 0 {
                         stack.pop();
+                    } else {
+                        stack.push(part);
                     }
                 }
                 "." => (),

@@ -1,6 +1,16 @@
-#include "scene_node.hpp"
+#ifndef SCENE_CONTEXT_HPP
+#define SCENE_CONTEXT_HPP
 
-constexpr const char *vertexShader = R"(
+#include <iostream>
+#include <map>
+#include <variant>
+
+#include <QtGui/QImage>
+#include <QtQuick/QQuickWindow>
+
+#include "texture_spec.hpp"
+
+inline const char VERTEX_SHADER[] = R"(
 #version 150
 
 #define GLSL 1
@@ -151,7 +161,6 @@ uniform vec2 g_Point0; // {"material":"point0","label":"p0","default":"0 0"}
 uniform vec2 g_Point1; // {"material":"point1","label":"p1","default":"1 0"}
 uniform vec2 g_Point2; // {"material":"point2","label":"p2","default":"1 1"}
 uniform vec2 g_Point3; // {"material":"point3","label":"p3","default":"0 1"}
-uniform mat4 qt_Matrix;
 
 varying vec3 v_TexCoordPerspective;
 
@@ -169,7 +178,7 @@ void main() {
 }
 )";
 
-constexpr const char *fragmentShader = R"(
+inline const char FRAGMENT_SHADER[] = R"(
 #version 150
 
 #define GLSL 1
@@ -279,26 +288,8 @@ void main() {
 }
 )";
 
-SceneNode::SceneNode()
-    : __material(new SceneMaterial(vertexShader, fragmentShader)),
-      __geometry(new SceneGeometry()) {
-  this->setMaterial(__material);
-  this->setFlag(QSGNode::OwnsMaterial);
+inline QQuickWindow *window = nullptr;
 
-  this->setGeometry(__geometry);
-  this->setFlag(QSGNode::OwnsGeometry);
-}
+struct SceneContext {};
 
-SceneNode::~SceneNode() {
-  // we shouldn't  delete __material and __geometry here
-  // delete __material;
-  // delete __geometry;
-}
-
-void SceneNode::updateState(const QRectF &rect, const float time) {
-  this->__geometry->updateState(rect);
-  this->markDirty(QSGNode::DirtyGeometry);
-
-  this->__material->updateState(time);
-  this->markDirty(QSGNode::DirtyMaterial);
-}
+#endif // SCENE_CONTEXT_HPP

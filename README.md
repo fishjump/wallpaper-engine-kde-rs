@@ -27,6 +27,10 @@ I am trying to create a wallpaper engine for KDE using Rust for some reasons:
 - [ ] Logger, watch debug output in the plasma shell.
 - [x] Switch to `anyhow` for error handling.
 
+## Playground
+
+- [] Finish a workflow in test mod, 1. load a scene file and mount unpacked files, 2. load the scene.json file, 3. read the shader files, 4. render the wallpaper.
+
 ## Notes
 
 - Shaders in a unpacked scene file is not using standard GLSL. They support `#include`, which comes from `~/steam/steamapps/common/wallpaper_engine/assets/`. Technically, I can embed these files, but due to the copyright issue, I will not do that.

@@ -56,7 +56,10 @@ impl SceneVFS {
             let to = format!("{}/{}", to, relative.to_str().unwrap());
             let from = entry.path().to_str();
             if let None = from {
-                return wp_result!(VfsPathToStrError, entry.path().to_path_buf());
+                return wp_result!(
+                    VfsPathToStrError,
+                    entry.path().to_path_buf()
+                );
             }
 
             self.mount(to.as_str(), from.unwrap());
@@ -88,14 +91,20 @@ impl SceneVFS {
             match content {
                 Ok(c) => c,
                 Err(err) => {
-                    return wp_result!(VfsReadToStringError, err.to_string());
+                    return wp_result!(
+                        VfsReadToStringError,
+                        from.to_string(),
+                        err.to_string()
+                    );
                 }
             }
         });
 
         match &file.content {
             SceneFileContent::Present(c) => Ok(c.clone()),
-            SceneFileContent::Absent(_) => unreachable!("data should be present now"),
+            SceneFileContent::Absent(_) => {
+                unreachable!("data should be present now")
+            }
         }
     }
 

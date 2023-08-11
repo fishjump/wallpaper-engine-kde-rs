@@ -64,13 +64,15 @@ mod test {
 
     #[test]
     fn wp_scene() {
-        let mut f = File::open("../assets/wallpaper/scene.json").unwrap();
+        // let mut f = File::open("../assets/wallpaper/scene.json").unwrap();
+        let mut f = File::open("/mnt/c/Program Files (x86)/Steam/steamapps/workshop/content/431960/2619088810/output/scene.json").unwrap();
+
         let mut buf = String::new();
         f.read_to_string(&mut buf).unwrap();
 
-        let scene: WPScene = serde_json::from_str(buf.as_str()).unwrap();
-        println!("{:#?}", scene);
+        let scene: Result<WPScene, _> = serde_json::from_str(buf.as_str());
+        assert!(scene.is_ok());
 
-        assert!(false);
+        println!("{:#?}", scene.unwrap());
     }
 }

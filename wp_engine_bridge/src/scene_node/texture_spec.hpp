@@ -83,4 +83,39 @@ constexpr const char *const g_WPAttributes[] = {
 constexpr size_t g_WPAttributeCount =
     sizeof(g_WPAttributes) / sizeof(const char *);
 
+__attribute__((packed)) struct Point3DWithTexCoord {
+  float x;
+  float y;
+  float z;
+
+  float u;
+  float v;
+
+  void set(float x, float y, float z, float u, float v) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
+
+    this->u = u;
+    this->v = v;
+  }
+};
+
+inline QSGGeometry::AttributeSet &AttrColoredPoint3DWithTexCoord() {
+  static QSGGeometry::Attribute attributes[] = {
+      QSGGeometry::Attribute::create(0, 3, GL_FLOAT, true), // a_Position
+      QSGGeometry::Attribute::create(1, 2, GL_FLOAT, false) // a_TexCoord
+  };
+
+  static QSGGeometry::AttributeSet attrSet = {2, sizeof(Point3DWithTexCoord),
+                                              attributes};
+
+  return attrSet;
+}
+
+inline const char *const *attributeNames() {
+  static const char *const names[] = {"a_Position", "a_TexCoord", 0};
+  return names;
+}
+
 #endif // __UNIFORM_HPP

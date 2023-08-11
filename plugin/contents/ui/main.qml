@@ -8,6 +8,8 @@ import "WallpaperEngineKDE" 1.0
 
 Rectangle {
     visible: true
+    width: 1920
+    height: 1080
 
     SceneRenderer {
         id: renderer

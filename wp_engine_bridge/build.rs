@@ -53,5 +53,6 @@ fn main() {
         // already gone in Qt6. So, there's just no point seeing these warning
         // over and over again.
         .flag_if_supported("-Wno-deprecated-declarations")
+        .flag_if_supported("-std=c++17")
         .build("src/lib.rs");
 }

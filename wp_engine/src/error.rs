@@ -28,11 +28,17 @@ pub enum WPEngineError {
     #[error("[{0}]VfsFileNotFoundError, vfs path: {3}, where: {1}:{2}")]
     VfsFileNotFoundError(&'static str, &'static str, u32, String),
 
-    #[error("[{0}]VfsFileAlreadyExistsError, reason: {3}, where: {1}:{2}")]
-    VfsReadToStringError(&'static str, &'static str, u32, String),
+    #[error("[{0}]VfsReadToStringError, read from vfs path: {3}, reason: {4}, where: {1}:{2}")]
+    VfsReadToStringError(&'static str, &'static str, u32, String, String),
 
-    #[error("[{0}]VfsReadToStringError, read from vfs path: {3}, however, the content should be loaded from {4}, but it absences, where: {1}:{2}")]
-    VfsSceneFileDataAbsentError(&'static str, &'static str, u32, String, String),
+    #[error("[{0}]VfsSceneFileDataAbsentError, read from vfs path: {3}, however, the content should be loaded from {4}, but it absences, where: {1}:{2}")]
+    VfsSceneFileDataAbsentError(
+        &'static str,
+        &'static str,
+        u32,
+        String,
+        String,
+    ),
 
     #[error("[{0}]VfsDirEntryError, reason: {3}, where: {1}:{2}")]
     VfsDirEntryError(&'static str, &'static str, u32, String),
@@ -53,16 +59,40 @@ pub enum WPEngineError {
 
     // invalid magics
     #[error("[{0}]RepkgInvalidTexMagic1Error, expect: {3}, actual: {4}, where: {1}:{2}")]
-    RepkgInvalidTexMagic1Error(&'static str, &'static str, u32, &'static str, String),
+    RepkgInvalidTexMagic1Error(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        String,
+    ),
 
     #[error("[{0}]RepkgInvalidTexMagic2Error, expect: {3}, actual: {4}, where: {1}:{2}")]
-    RepkgInvalidTexMagic2Error(&'static str, &'static str, u32, &'static str, String),
+    RepkgInvalidTexMagic2Error(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        String,
+    ),
 
     #[error("[{0}]RepkgInvalidTexImageMagicError, expect: {3}, actual: {4}, where: {1}:{2}")]
-    RepkgInvalidTexImageMagicError(&'static str, &'static str, u32, &'static str, String),
+    RepkgInvalidTexImageMagicError(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        String,
+    ),
 
     #[error("[{0}]RepkgInvalidTexFrameMagicError, expect: {3}, actual: {4}, where: {1}:{2}")]
-    RepkgInvalidTexFrameMagicError(&'static str, &'static str, u32, &'static str, String),
+    RepkgInvalidTexFrameMagicError(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        String,
+    ),
 
     // data inconsistency errors
     #[error("[{0}]RepkgInvalidTexFrameInfoError, expect at least one frame, where: {1}:{2}")]
@@ -70,13 +100,31 @@ pub enum WPEngineError {
 
     // invalid enums
     #[error("[{0}]RepkgInvalidTexFormatError, expect: {3}, actual: {4}, where: {1}:{2}")]
-    RepkgInvalidTexFormatError(&'static str, &'static str, u32, &'static str, u8),
+    RepkgInvalidTexFormatError(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        u8,
+    ),
 
     #[error("[{0}]RepkgInvalidTexImageContainerVersion, expect: {3}, actual: {4}, where: {1}:{2}")]
-    RepkgInvalidTexImageContainerVersion(&'static str, &'static str, u32, &'static str, u8),
+    RepkgInvalidTexImageContainerVersion(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        u8,
+    ),
 
     #[error("[{0}]RepkgInvalidFreeImageFormat, expect: {3}, actual: {4}, where: {1}:{2}")]
-    RepkgInvalidFreeImageFormat(&'static str, &'static str, u32, &'static str, u8),
+    RepkgInvalidFreeImageFormat(
+        &'static str,
+        &'static str,
+        u32,
+        &'static str,
+        u8,
+    ),
 
     #[error("[{0}]RepkgUnknownMipmapFormatError, where: {1}:{2}")]
     RepkgUnknownMipmapFormatError(&'static str, &'static str, u32),

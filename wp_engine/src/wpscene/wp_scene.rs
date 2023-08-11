@@ -6,8 +6,8 @@ use super::wp_scene_object::WPSceneObject;
 
 #[derive(Debug, Deserialize, Serialize)]
 pub struct WPScene {
-    camera: WPSceneCamera,
-    general: WPSceneGeneral,
-    objects: Vec<WPSceneObject>,
-    version: usize,
+    pub camera: WPSceneCamera,
+    pub general: WPSceneGeneral,
+    pub objects: Vec<WPSceneObject>,
+    pub version: usize,
 }

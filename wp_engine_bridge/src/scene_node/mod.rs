@@ -5,8 +5,7 @@ use qmetaobject::scenegraph::SGNode;
 use qttypes::QRectF;
 
 cpp! {{
-    #include "src/scene_node/scene_node.cpp"
-    #include "src/scene_node/scene_shader.cpp"
+    #include "src/scene_node/bundle.cpp"
 }}
 
 pub fn pass_window_to_c(qquickitem: *mut c_void) {
@@ -15,21 +14,22 @@ pub fn pass_window_to_c(qquickitem: *mut c_void) {
     });
 }
 
-pub struct SceneNode {}
+pub struct SceneObject {}
 
-pub trait SceneNodeTrait {
+pub trait SceneObjectTrait {
     fn new_if_null(&mut self) -> &mut Self;
     fn update_state(&mut self, rect: QRectF, time: f32) -> &mut Self;
 }
 
-impl SceneNodeTrait for SGNode<SceneNode> {
-    fn new_if_null(&mut self) -> &mut SGNode<SceneNode> {
+impl SceneObjectTrait for SGNode<SceneObject> {
+    fn new_if_null(&mut self) -> &mut SGNode<SceneObject> {
         if !self.raw.is_null() {
             return self;
         }
 
         self.raw = cpp!(unsafe [] -> *mut c_void as "void *" {
-           return new SceneNode();
+            SceneContext* ctx = new SceneContext();
+            return new SceneObject{ctx};
         });
 
         self
@@ -39,13 +39,13 @@ impl SceneNodeTrait for SGNode<SceneNode> {
         &mut self,
         rect: QRectF,
         time: f32,
-    ) -> &mut SGNode<SceneNode> {
+    ) -> &mut SGNode<SceneObject> {
         if self.raw.is_null() {
             return self;
         }
 
         let raw = self.raw;
-        cpp! (unsafe [raw as "SceneNode *", rect as "QRectF", time as "float"] {
+        cpp! (unsafe [raw as "SceneObject *", rect as "QRectF", time as "float"] {
             raw->updateState(rect, time);
         });
 
