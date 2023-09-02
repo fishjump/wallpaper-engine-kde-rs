@@ -1,16 +1,4 @@
-#ifndef SCENE_CONTEXT_HPP
-#define SCENE_CONTEXT_HPP
-
-#include <iostream>
-#include <map>
-#include <variant>
-
-#include <QtGui/QImage>
-#include <QtQuick/QQuickWindow>
-
-#include "texture_spec.hpp"
-
-inline const char VERTEX_SHADER[] = R"(
+pub const VERTEX_SHADER: &'static str = r#"
 #version 150
 
 #define GLSL 1
@@ -176,9 +164,10 @@ void main() {
 	mat3 xform = inverse(squareToQuad(g_Point0, g_Point1, g_Point2, g_Point3));
 	v_TexCoordPerspective.xyz = mul(vec3(a_TexCoord.xy, 1.0), xform);
 }
-)";
+"#;
 
-inline const char FRAGMENT_SHADER[] = R"(
+
+pub const FRAGMENT_SHADER: &'static str = r#"
 #version 150
 
 #define GLSL 1
@@ -286,10 +275,4 @@ void main() {
 
 	gl_FragColor = texSample2D(g_Texture0, texCoord);
 }
-)";
-
-inline QQuickWindow *window = nullptr;
-
-struct SceneContext {};
-
-#endif // SCENE_CONTEXT_HPP
+"#;

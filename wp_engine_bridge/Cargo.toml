@@ -13,6 +13,7 @@ cstr = "0.2"
 cpp = "0.5.6"
 qmetaobject = "0.2.9"
 qttypes = "0.2.9"
+anyhow = "1.0.75"
 
 [build-dependencies]
 cpp_build = "0.5.6"
