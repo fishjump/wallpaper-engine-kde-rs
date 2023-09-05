@@ -14,13 +14,15 @@ mod byteorder_ext;
 mod package;
 mod tex;
 
+pub use package::package::Package;
+pub use tex::tex::Tex;
+
 #[cfg(test)]
 mod test {
     use std::fs::File;
     use std::io::BufReader;
 
-    use crate::repkg::package::package::Package;
-    use crate::repkg::tex::tex::Tex;
+    use crate::repkg::{Package, Tex};
 
     #[test]
     fn load_package() {
@@ -38,7 +40,8 @@ mod test {
 
     #[test]
     fn load_tex() {
-        let file = File::open("../assets/wallpaper/materials/00009.tex").unwrap();
+        let file =
+            File::open("../assets/wallpaper/materials/00009.tex").unwrap();
         let mut reader = BufReader::new(file);
         let tex = Tex::read_from(&mut reader).unwrap();
 

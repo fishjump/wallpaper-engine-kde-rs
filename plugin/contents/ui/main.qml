@@ -34,7 +34,16 @@ Rectangle {
         repeat: true
         running: true
         onTriggered: {
-            renderer.timer_inc(0.016);
+            renderer.tick_tock(0.016);
+        }
+    }
+    
+    Connections {
+        target: Qt.application
+        onActiveChanged: {
+            if (Qt.application.active) {
+                timer.start();
+            }
         }
     }
 

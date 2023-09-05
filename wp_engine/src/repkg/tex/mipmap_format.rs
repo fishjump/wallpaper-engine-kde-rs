@@ -220,7 +220,10 @@ pub enum MipmapFormat {
 }
 
 impl MipmapFormat {
-    pub fn from(tex_format: TexFormat, image_format: FreeImageFormat) -> Result<MipmapFormat> {
+    pub fn from(
+        tex_format: TexFormat,
+        image_format: FreeImageFormat,
+    ) -> Result<MipmapFormat> {
         match image_format {
             FreeImageFormat::FifUnknown => Ok(match tex_format {
                 TexFormat::RGBA8888 => MipmapFormat::RGBA8888,
@@ -234,7 +237,9 @@ impl MipmapFormat {
         }
     }
 
-    fn from_image_format(image_format: FreeImageFormat) -> Result<MipmapFormat> {
+    fn from_image_format(
+        image_format: FreeImageFormat,
+    ) -> Result<MipmapFormat> {
         Ok(match image_format {
             FreeImageFormat::FifUnknown => {
                 return wp_result!(RepkgUnknownMipmapFormatError);

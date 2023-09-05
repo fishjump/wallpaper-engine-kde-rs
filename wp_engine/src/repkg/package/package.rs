@@ -22,7 +22,11 @@ impl Package {
         let magic = reader.wp_read_string(magic_size as usize)?;
 
         if magic.len() != magic_size as usize {
-            return wp_result!(RepkgReadSizeMismatchError, magic_size as usize, magic.len());
+            return wp_result!(
+                RepkgReadSizeMismatchError,
+                magic_size as usize,
+                magic.len()
+            );
         }
 
         let entry_count = reader.wp_read_i32()?;

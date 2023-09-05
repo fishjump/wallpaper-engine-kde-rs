@@ -17,7 +17,9 @@ pub struct TexFrameInfoContainer {
 }
 
 impl TexFrameInfoContainer {
-    pub fn read_from(reader: &mut BufReader<File>) -> Result<TexFrameInfoContainer> {
+    pub fn read_from(
+        reader: &mut BufReader<File>,
+    ) -> Result<TexFrameInfoContainer> {
         let magic = reader.wp_read_string_dyn()?;
 
         let frame_count = reader.wp_read_i32()?;
@@ -52,7 +54,9 @@ impl TexFrameInfoContainer {
         for _ in 0..frame_count {
             let frame = match magic.as_str() {
                 "TEXS0001" => TexFrameInfo::read_from_v1(reader)?,
-                "TEXS0002" | "TEXS0003" => TexFrameInfo::read_from_v2v3(reader)?,
+                "TEXS0002" | "TEXS0003" => {
+                    TexFrameInfo::read_from_v2v3(reader)?
+                }
                 _ => {
                     return wp_result!(
                         RepkgInvalidTexFrameMagicError,

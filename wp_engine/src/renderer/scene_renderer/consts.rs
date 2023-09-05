@@ -166,7 +166,6 @@ void main() {
 }
 "#;
 
-
 pub const FRAGMENT_SHADER: &'static str = r#"
 #version 150
 
@@ -275,4 +274,65 @@ void main() {
 
 	gl_FragColor = texSample2D(g_Texture0, texCoord);
 }
+"#;
+
+pub const VERTEX_SHADER_1: &'static str = r#"
+#version 330
+
+layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec2 a_TexCoord;
+
+out vec2 texCoord;
+
+uniform mat4 g_ModelViewProjectionMatrix;
+
+void main() {
+	texCoord = a_TexCoord;
+	gl_Position = vec4(a_Position, 1.0);
+}
+"#;
+
+pub const FRAGMENT_SHADER_1: &'static str = r#"
+#version 330
+
+in vec2 texCoord;
+
+out vec4 outColor;
+
+void main() {
+	// outColor = vec4(texCoord.x, 0.0, 0.0, 1.0);
+	outColor = vec4(texCoord, 0.0, 1.0);
+}
+"#;
+
+pub const VERTEX_SHADER_2: &'static str = r#"
+#version 330
+
+layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec2 a_TexCoord;
+
+out vec2 texCoord;
+
+uniform mat4 g_ModelViewProjectionMatrix;
+
+void main() {
+	texCoord = a_TexCoord;
+	gl_Position = g_ModelViewProjectionMatrix * vec4(a_Position, 1.0);
+}
+"#;
+
+pub const FRAGMENT_SHADER_2: &'static str = r#"
+#version 330
+
+in vec2 texCoord;
+
+out vec4 outColor;
+
+uniform sampler2D g_Texture0;
+uniform int g_Texture0Id;
+
+void main() {
+    outColor = 0.5 * texture(g_Texture0, texCoord);
+}
+  
 "#;

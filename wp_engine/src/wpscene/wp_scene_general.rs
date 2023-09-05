@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 
 use super::from_str_to_arr3;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Default, Deserialize, Serialize)]
 pub struct WPSceneGeneral {
     #[serde(deserialize_with = "from_str_to_arr3")]
     #[serde(default = "default_ambientcolor")]

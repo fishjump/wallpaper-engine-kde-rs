@@ -4,7 +4,8 @@ use super::scene_path::ScenePath;
 
 #[derive(Debug)]
 pub struct SceneFile {
-    #[allow(clippy::rc_buffer)] // to allow accessing the same object as writable
+    #[allow(clippy::rc_buffer)]
+    // to allow accessing the same object as writable
     pub content: SceneFileContent,
 }
 

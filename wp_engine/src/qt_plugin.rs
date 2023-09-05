@@ -17,7 +17,12 @@ struct WallpaperEngineKdePlugin {
 
 impl QQmlExtensionPlugin for WallpaperEngineKdePlugin {
     fn register_types(&mut self, uri: &CStr) {
-        qml_register_type::<Greeter>(uri, MAJOR_VERSION, MINOR_VERSION, cstr!("Greeter"));
+        qml_register_type::<Greeter>(
+            uri,
+            MAJOR_VERSION,
+            MINOR_VERSION,
+            cstr!("Greeter"),
+        );
         qml_register_type::<renderer::scene_renderer::SceneRenderer>(
             uri,
             MAJOR_VERSION,

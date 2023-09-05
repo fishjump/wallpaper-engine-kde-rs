@@ -32,7 +32,8 @@ impl Tex {
         }
 
         let header = TexHeader::read_from(reader)?;
-        let image_container = TexImageContainer::read_from(reader, header.format)?;
+        let image_container =
+            TexImageContainer::read_from(reader, header.format)?;
         let frame_info_container = if header.flags.contains(TexFlags::IS_GIF) {
             TexFrameInfoContainer::read_from(reader)?
         } else {

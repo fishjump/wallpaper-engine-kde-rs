@@ -41,8 +41,11 @@ impl TexImage {
         mipmaps.reserve_exact(mipmap_count as usize);
         for _ in 0..mipmap_count {
             let mipmap = match version {
-                TexImageContainerVersion::Version1 => TexMipmap::read_from_v1(reader, format)?,
-                TexImageContainerVersion::Version2 | TexImageContainerVersion::Version3 => {
+                TexImageContainerVersion::Version1 => {
+                    TexMipmap::read_from_v1(reader, format)?
+                }
+                TexImageContainerVersion::Version2
+                | TexImageContainerVersion::Version3 => {
                     TexMipmap::read_from_v2v3(reader, format)?
                 }
             };

@@ -3,7 +3,13 @@
 
 #include <QtQuick/QSGGeometry>
 
-__attribute__((packed)) struct Point3DWithTexCoord {
+/**
+ * @brief Struct representing a 3D point with texture coordinates.
+ *
+ * This structure has attributes to represent the position in 3D space (x, y, z)
+ * as well as texture coordinates (u, v).
+ */
+struct Point3DWithTexCoord {
   float x;
   float y;
   float z;
@@ -19,29 +25,42 @@ __attribute__((packed)) struct Point3DWithTexCoord {
     this->u = u;
     this->v = v;
   }
-};
+} __attribute__((packed));
 
-inline QSGGeometry::AttributeSet &AttrColoredPoint3DWithTexCoord() {
+/**
+ * @brief Provides geometry attributes for a 3D point with texture coordinates.
+ *
+ * @return A reference to QSGGeometry::AttributeSet for the point with texture
+ * coordinates.
+ */
+inline QSGGeometry::AttributeSet &attr_point3d_with_tex_coord() {
   static QSGGeometry::Attribute attributes[] = {
       QSGGeometry::Attribute::create(0, 3, GL_FLOAT, true), // a_Position
       QSGGeometry::Attribute::create(1, 2, GL_FLOAT, false) // a_TexCoord
   };
 
-  static QSGGeometry::AttributeSet attrSet = {2, sizeof(Point3DWithTexCoord),
-                                              attributes};
+  static QSGGeometry::AttributeSet attr_set = {2, sizeof(Point3DWithTexCoord),
+                                               attributes};
 
-  return attrSet;
+  return attr_set;
 }
 
+/**
+ * @brief A custom geometry class derived from QSGGeometry for scenes.
+ *
+ * It is used to describe a geometry that is used within the scene.
+ */
 class SceneGeometry : public QSGGeometry {
 public:
-  SceneGeometry();
-
+  explicit SceneGeometry();
   void update(const QRectF &rect);
 };
 
+// ********************************
+// * SceneGeometry implementation *
+// ********************************
 SceneGeometry::SceneGeometry()
-    : QSGGeometry(AttrColoredPoint3DWithTexCoord(), 6) {}
+    : QSGGeometry(attr_point3d_with_tex_coord(), 6) {}
 
 void SceneGeometry::update(const QRectF &rect) {
   this->setDrawingMode(GL_TRIANGLES);
@@ -56,4 +75,5 @@ void SceneGeometry::update(const QRectF &rect) {
   vertices[4].set(rect.left(), rect.top(), 0.0, 0.0, 0.0);
   vertices[5].set(rect.right(), rect.bottom(), 0.0, 1.0, 1.0);
 }
+
 #endif // __SCENE_GEOMETRY_HPP

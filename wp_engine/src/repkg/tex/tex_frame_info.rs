@@ -49,7 +49,9 @@ impl TexFrameInfo {
         }))
     }
 
-    pub fn read_from_v2v3(reader: &mut BufReader<File>) -> Result<TexFrameInfo> {
+    pub fn read_from_v2v3(
+        reader: &mut BufReader<File>,
+    ) -> Result<TexFrameInfo> {
         Ok(TexFrameInfo::V2V3(TexFrameInfoV2V3 {
             image_id: reader.wp_read_i32()?,
             frame_time: reader.wp_read_f32()?,

@@ -1,13 +1,11 @@
 mod error;
 mod greeter;
-mod logger;
+mod qt_plugin;
 mod renderer;
-mod repkg;
-mod shader;
 mod vfs;
 mod wpscene;
 
-pub mod qt_plugin;
+pub mod repkg;
 
 #[cfg(test)]
 mod test {

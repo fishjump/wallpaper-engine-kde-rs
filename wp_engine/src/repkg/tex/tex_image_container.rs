@@ -65,7 +65,8 @@ impl TexImageContainer {
         let mut images = Vec::new();
         images.reserve_exact(image_count as usize);
         for _ in 0..image_count {
-            let image = TexImage::read_from(reader, tex_format, format, version)?;
+            let image =
+                TexImage::read_from(reader, tex_format, format, version)?;
             images.push(image);
         }
 
